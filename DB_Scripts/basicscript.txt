@@ -1,0 +1,91 @@
+CREATE TABLE `crop` (
+  `id` int(32) NOT NULL,
+  `user_id` int(32) NOT NULL,
+  `category` int(32) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `photo` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `start_date` timestamp NULL DEFAULT NULL,
+  `qty` varchar(20) DEFAULT NULL,
+  `quality` varchar(100) DEFAULT NULL,
+  `price` varchar(100) NOT NULL DEFAULT '0',
+  `location` varchar(200) DEFAULT NULL,
+  `address` text NOT NULL,
+  `created_on` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_by` int(32) NOT NULL DEFAULT 0,
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+    PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `crop_images` (
+  `id` int(32) NOT NULL,
+  `crop_id` int(32) NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `uploaded_on` timestamp NOT NULL DEFAULT current_timestamp(),
+    PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `modules` (
+  `id` int(32) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `subscription_type` enum('free','paid','','') NOT NULL,
+  `expiry` int(10) NOT NULL DEFAULT 0,
+  `created_on` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_by` int(32) NOT NULL DEFAULT 0,
+  `status` tinyint(1) DEFAULT 1,
+    PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+CREATE TABLE `user` (
+  `id` int(32) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(200) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `profile_img` varchar(255) DEFAULT NULL,
+  `created_on` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_by` int(32) NOT NULL DEFAULT 0,
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+    PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+CREATE TABLE `user_modules` (
+  `id` int(32) NOT NULL,
+  `user_id` int(32) NOT NULL,
+  `module_id` int(32) NOT NULL,
+  `start_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `end_date` timestamp NULL DEFAULT NULL,
+  `created_on` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_by` int(32) NOT NULL DEFAULT 0,
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+    PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+CREATE TABLE `user_module_subscription` (
+  `id` int(32) NOT NULL,
+  `user_id` int(32) NOT NULL,
+  `module_id` int(32) NOT NULL,
+  `start_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `end_date` timestamp NULL DEFAULT NULL,
+  `subscription_type` enum('Free','Paid') NOT NULL DEFAULT 'Free',
+  `paid_amt` float(10,2) NOT NULL,
+  `trans_id` varchar(255) DEFAULT NULL,
+  `payment_type` varchar(255) DEFAULT NULL,
+  `payment_response` text DEFAULT NULL,
+  `created_on` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_by` int(32) NOT NULL DEFAULT 0,
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+    PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+
