@@ -74,7 +74,7 @@
             $adUpdP_Data->category = $data['category'];
             $adUpdP_Data->name = $data['name'];
             $adUpdP_Data->description = $data['description'];
-            $adUpdP_Data->photo = $data['photo'];
+            // $adUpdP_Data->photo = $data['photo'];
             $adUpdP_Data->qty = $data['qty'];
             $adUpdP_Data->quality = $data['quality'];
             $adUpdP_Data->price = $data['price'];
