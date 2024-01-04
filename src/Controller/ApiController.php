@@ -37,6 +37,7 @@
     
             $this->loadModel('User');
             $this->loadModel('Crop');
+            $this->loadComponent("Media");
         }
 
         public function register(){
@@ -65,16 +66,14 @@
 
         public function addproducts(){
             $data = $this->request->getData();
-            $result = "hello";
-            // debug($result);
-            // debug($data);
+
             $addpT_Data = TableRegistry::get('Crop');
             $adUpdP_Data = $this->Crop->newEmptyEntity();
             $adUpdP_Data->user_id = $data['user_id'];
             $adUpdP_Data->category = $data['category'];
             $adUpdP_Data->name = $data['name'];
             $adUpdP_Data->description = $data['description'];
-            // $adUpdP_Data->photo = $data['photo'];
+            $adUpdP_Data->photo = $this->Media->upload($data['photo'], 'Crop');
             $adUpdP_Data->qty = $data['qty'];
             $adUpdP_Data->quality = $data['quality'];
             $adUpdP_Data->price = $data['price'];
@@ -83,14 +82,28 @@
             $adUpdP_Data->created_by = $data['created_by'];
             $adUpdP_Data->status = $data['status'];
             // debug($addpT_Data);
-            // debug($adUpdP_Data);
             $addpT_Data->save($adUpdP_Data);
-            $this->Flash->success(__('The company has been saved.'));
-            return null;
+            $result = 'The Crop Data has been saved.';
+            $this->set("result", $result);
         }
         
         public function dashbord(){
 
         }
-
+        // The method to process and move the uploaded file
+        protected function processUpload($uploadedFile)
+        {
+            debug($uploadedFile);
+            $targetDir = WWW_ROOT . 'img' . DS . 'uploads' . DS;
+            debug( $targetDir);
+            $filename = md5(uniqid()) . '.' . pathinfo($uploadedFile->getClientFilename());
+            debug($filename);
+            $uploadPath = $targetDir . $filename;
+        
+            if ($uploadedFile->moveTo($uploadPath)) {
+                return 'uploads' . DS . $filename;
+            }
+        
+            return null;
+        }
     }
