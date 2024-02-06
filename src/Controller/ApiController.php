@@ -37,30 +37,31 @@
     
             $this->loadModel('User');
             $this->loadModel('Crop');
+            $this->loadModel('CropImages');
             $this->loadComponent("Media");
         }
 
         public function register(){
-            $result="hello";
+            
             if($this->request->is('post')){
                 $data = $this->request->getdata();
-                $adTbl= $this->User->newEmptyEntity();
-                $adTbl->name =  $data['name'];
-                $adTbl->phonenum = $data['mobile'];
-                $adTbl->password = $data['password'];
-                $adTbl->categeory = 1;
-                debug($adTbl);
-                die;
-                $this->User->save($adTbl);   
-        
-                 
-                 
-
-
+                // debug($data);
+                $addrT_Data = TableRegistry::get('User');
+                $adUpdr_Data= $this->User->newEmptyEntity();
+                $adUpdr_Data->name =  $data['name'];
+                $adUpdr_Data->email = $data['email'];
+                $adUpdr_Data->phone = $data['phone'];
+                $adUpdr_Data->profile_img = $this->Media->upload($data['profile_img'], 'User_img');
+                // $adUpdr_Data->created_on = $data['created_on'];
+                $adUpdr_Data->password = $data['password'];
+                $adUpdr_Data->created_by = $data['created_by'];
+                $adUpdr_Data->status = $data['status'];
+                // debug($adUpdr_Data);
+                $addrT_Data->save($adUpdr_Data); 
+                $result = 'The register Data has been saved.';
             }
-            debug($result);
-            die;    
-             return   $result;
+            // debug($result);  
+            $this->set("result", $result);
         }
 
 
@@ -87,23 +88,51 @@
             $this->set("result", $result);
         }
         
-        public function dashbord(){
-
-        }
-        // The method to process and move the uploaded file
-        protected function processUpload($uploadedFile)
-        {
-            debug($uploadedFile);
-            $targetDir = WWW_ROOT . 'img' . DS . 'uploads' . DS;
-            debug( $targetDir);
-            $filename = md5(uniqid()) . '.' . pathinfo($uploadedFile->getClientFilename());
-            debug($filename);
-            $uploadPath = $targetDir . $filename;
-        
-            if ($uploadedFile->moveTo($uploadPath)) {
-                return 'uploads' . DS . $filename;
+        public function addcropimages(){
+            if($this->request->is('post')){
+                $data = $this->request->getdata();
+                // debug($data);
+                $addciT_Data = TableRegistry::get('CropImages');
+                $adUpdCP_Data = $this->CropImages->newEmptyEntity();
+                $adUpdCP_Data->crop_id = $data['crop_id'];
+                $adUpdCP_Data->location = $data['location'];
+                $adUpdCP_Data->uploaded_on = $data['uploaded_on'];
+                // debug($adUpdCP_Data);
+                $addciT_Data->save($adUpdCP_Data); 
+                $result = 'The cropimages Data has been saved.';
             }
-        
-            return null;
+             // debug($result);  
+             $this->set("result", $result);
         }
+        
+        public function addmodules(){
+            if($this->request->is('post')){
+                $data = $this->request->getdata();
+                // debug($data);
+            }
+        }
+
+        public function login(){
+            $result=[];
+            
+            if($this->request->is('post')){
+                $data = $this->request->getdata(); 
+                // debug($data);
+                // die;               
+                $userddata = $this->User->find('all')
+                ->where([
+                    'password' => $data['password'], 'name' => $data['name']
+            ])
+                ->toArray();  
+                // debug($userddata);              
+                if (count($userddata) == 1) {
+                    $result = 'The User Login Not Done.';
+                    $result = ['error' => 0,'status' => 200];
+                }else{
+                    $result = ['error' => 1];
+                }                 
+            }
+            $this->set("result", $result);
+        }
+
     }

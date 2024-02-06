@@ -89,3 +89,4 @@ CREATE TABLE `user_module_subscription` (
 
 
 
+ALTER TABLE `user` CHANGE `id` `id` INT(32) NOT NULL AUTO_INCREMENT;
