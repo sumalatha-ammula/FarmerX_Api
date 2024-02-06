@@ -39,13 +39,16 @@
             $this->loadModel('Crop');
             $this->loadModel('CropImages');
             $this->loadComponent("Media");
+            $this->loadModel("Modules");
         }
 
         public function register(){
             
             if($this->request->is('post')){
+                $result=[];
                 $data = $this->request->getdata();
-                // debug($data);
+                debug($data);
+                // die;
                 $addrT_Data = TableRegistry::get('User');
                 $adUpdr_Data= $this->User->newEmptyEntity();
                 $adUpdr_Data->name =  $data['name'];
@@ -58,9 +61,25 @@
                 $adUpdr_Data->status = $data['status'];
                 // debug($adUpdr_Data);
                 $addrT_Data->save($adUpdr_Data); 
-                $result = 'The register Data has been saved.';
+                $lastuser = $this->User->find('all')->last();
+                $lastRecordId = $lastuser->id;
+                $result ['massage']= 'The register Data has been saved.';
             }
             // debug($result);  
+
+            if(!empty($data['subscription_type'])){
+                $addrT_Data = TableRegistry::get('Modules');
+                $adM_Data= $this->Modules->newEmptyEntity();
+                $adM_Data->name =  $data['mname'];
+                $adM_Data->subscription_type =  $data['subscription_type'];
+                $adM_Data->expiry =  $data['expiry'];
+                // $adM_Data->created_on =  $data['created_on'];
+                $adM_Data->created_by =  $lastRecordId;
+                $adM_Data->status =  1;
+                $addrT_Data->save($adM_Data); 
+                $result ['massage']= 'The register module has been saved.';
+
+            }
             $this->set("result", $result);
         }
 
@@ -108,7 +127,8 @@
         public function addmodules(){
             if($this->request->is('post')){
                 $data = $this->request->getdata();
-                // debug($data);
+                debug($data);
+                die;
             }
         }
 
