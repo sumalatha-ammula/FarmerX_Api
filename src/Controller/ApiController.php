@@ -47,7 +47,7 @@
             if($this->request->is('post')){
                 $result=[];
                 $data = $this->request->getdata();
-                debug($data);
+                // debug($data);
                 // die;
                 $addrT_Data = TableRegistry::get('User');
                 $adUpdr_Data= $this->User->newEmptyEntity();
@@ -63,9 +63,7 @@
                 $addrT_Data->save($adUpdr_Data); 
                 $lastuser = $this->User->find('all')->last();
                 $lastRecordId = $lastuser->id;
-                $result ['massage']= 'The register Data has been saved.';
-            }
-            // debug($result);  
+            } 
 
             if(!empty($data['subscription_type'])){
                 $addrT_Data = TableRegistry::get('Modules');
@@ -77,23 +75,23 @@
                 $adM_Data->created_by =  $lastRecordId;
                 $adM_Data->status =  1;
                 $addrT_Data->save($adM_Data); 
-                $result ['massage']= 'The register module has been saved.';
+                $result ['massage']= 'The register Data and register module has been saved.';
 
             }
             $this->set("result", $result);
         }
 
 
-        public function addproducts(){
+        public function addcrop(){
+            $result=[];
             $data = $this->request->getData();
-
             $addpT_Data = TableRegistry::get('Crop');
             $adUpdP_Data = $this->Crop->newEmptyEntity();
             $adUpdP_Data->user_id = $data['user_id'];
             $adUpdP_Data->category = $data['category'];
             $adUpdP_Data->name = $data['name'];
             $adUpdP_Data->description = $data['description'];
-            $adUpdP_Data->photo = $this->Media->upload($data['photo'], 'Crop');
+            $adUpdP_Data->photo = $this->Media->upload($data['photo'][0], 'Crop');
             $adUpdP_Data->qty = $data['qty'];
             $adUpdP_Data->quality = $data['quality'];
             $adUpdP_Data->price = $data['price'];
@@ -101,36 +99,45 @@
             $adUpdP_Data->address = $data['address'];
             $adUpdP_Data->created_by = $data['created_by'];
             $adUpdP_Data->status = $data['status'];
-            // debug($addpT_Data);
             $addpT_Data->save($adUpdP_Data);
-            $result = 'The Crop Data has been saved.';
+            $lastproduct = $this->Crop->find('all')->last();
+            $lastRecordId = $lastproduct->id;
+            if(!empty($data['photo'])){
+                $photos = $data['photo']; // Assuming $data['photo'] is an array of photos
+                unset($photos[0]);
+                foreach ($photos as $photo) {
+                    $addciT_Data = TableRegistry::get('CropImages');
+                    $adUpdCP_Data = $this->CropImages->newEmptyEntity();
+                    $adUpdCP_Data->crop_id = $lastRecordId;
+                    $adUpdCP_Data->location = $this->Media->upload($photo, 'Crop');
+                    // $adUpdCP_Data->uploaded_on = $data['uploaded_on'];
+                    $addciT_Data->save($adUpdCP_Data); 
+                    $result ['massage'] = 'The Crop Data and cropimages Data  has been saved.';
+                }
+            }
             $this->set("result", $result);
         }
         
-        public function addcropimages(){
-            if($this->request->is('post')){
-                $data = $this->request->getdata();
-                // debug($data);
-                $addciT_Data = TableRegistry::get('CropImages');
-                $adUpdCP_Data = $this->CropImages->newEmptyEntity();
-                $adUpdCP_Data->crop_id = $data['crop_id'];
-                $adUpdCP_Data->location = $data['location'];
-                $adUpdCP_Data->uploaded_on = $data['uploaded_on'];
-                // debug($adUpdCP_Data);
-                $addciT_Data->save($adUpdCP_Data); 
-                $result = 'The cropimages Data has been saved.';
-            }
-             // debug($result);  
+        public function listofcrop(){
+            $result=[];
+            $result['error'] = 0;
+            $results = $this->Crop->find('all')
+            ->select(['name', 'qty', 'price', 'location', 'photo'])
+            ->toArray();
+            $result = ['error' => 1, 'status' => 200, 'data'=>$results ];
              $this->set("result", $result);
         }
-        
-        public function addmodules(){
-            if($this->request->is('post')){
-                $data = $this->request->getdata();
-                debug($data);
-                die;
-            }
+        public function cropdetails(){
+            $result=[];
+            $result['error'] = 0;
+            $results = $this->Crop->find('all')
+            ->select(['name', 'qty', 'price', 'location', 'photo', 'description', 'quality', 'location', 'address'])
+            ->toArray();
+            $result = ['error' => 1, 'status' => 200, 'data'=>$results ];
+             $this->set("result", $result);
+
         }
+        
 
         public function login(){
             $result=[];
@@ -154,5 +161,6 @@
             }
             $this->set("result", $result);
         }
+
 
     }
