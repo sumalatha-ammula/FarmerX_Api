@@ -51,26 +51,26 @@
                 // die;
                 $addrT_Data = TableRegistry::get('User');
                 $adUpdr_Data= $this->User->newEmptyEntity();
-                $adUpdr_Data->name =  $data['name'];
+                $adUpdr_Data->name =  $data['username'];
                 $adUpdr_Data->email = $data['email'];
-                $adUpdr_Data->phone = $data['phone'];
-                $adUpdr_Data->profile_img = $this->Media->upload($data['profile_img'], 'User_img');
+                $adUpdr_Data->phone = $data['mobile'];
+                // $adUpdr_Data->profile_img = $this->Media->upload($data['profile_img'], 'User_img');
                 // $adUpdr_Data->created_on = $data['created_on'];
                 $adUpdr_Data->password = $data['password'];
-                $adUpdr_Data->created_by = $data['created_by'];
-                $adUpdr_Data->status = $data['status'];
+                // $adUpdr_Data->created_by = $data['created_by'];
+                $adUpdr_Data->status = 1;
                 // debug($adUpdr_Data);
                 $addrT_Data->save($adUpdr_Data); 
                 $lastuser = $this->User->find('all')->last();
                 $lastRecordId = $lastuser->id;
             } 
 
-            if(!empty($data['subscription_type'])){
+            if(!empty($data['mname'])){
                 $addrT_Data = TableRegistry::get('Modules');
                 $adM_Data= $this->Modules->newEmptyEntity();
                 $adM_Data->name =  $data['mname'];
-                $adM_Data->subscription_type =  $data['subscription_type'];
-                $adM_Data->expiry =  $data['expiry'];
+                // $adM_Data->subscription_type =  $data['subscription_type'];
+                // $adM_Data->expiry =  $data['expiry'];
                 // $adM_Data->created_on =  $data['created_on'];
                 $adM_Data->created_by =  $lastRecordId;
                 $adM_Data->status =  1;
@@ -137,7 +137,10 @@
              $this->set("result", $result);
 
         }
-        
+        private function generatetoken() {
+            $token = bin2hex(random_bytes(16));
+            return $token;
+         }
 
         public function login(){
             $result=[];
@@ -148,15 +151,26 @@
                 // die;               
                 $userddata = $this->User->find('all')
                 ->where([
-                    'password' => $data['password'], 'name' => $data['name']
+                    'password' => $data['password'], 'name' => $data['username']
             ])
                 ->toArray();  
                 // debug($userddata);              
                 if (count($userddata) == 1) {
-                    $result = 'The User Login Not Done.';
-                    $result = ['error' => 0,'status' => 200];
+                    $lt = TableRegistry::get('User');
+                    $ld = $lt->get($userddata[0]->id);
+                    $ld->token = $this->generatetoken();
+                    $ld->deviceid = isset($data['deviceid']) ? $data['deviceid'] : '';
+                    $ld->deviceinfo = isset($data['deviceinfo']) ? $data['deviceinfo'] : '';
+                    $userddata[0]->token = $ld->token;
+                    $lt->save($ld);
+                    $result = 'The User Login Done.';
+                    $result = ['error' => 0,'member' => $userddata[0],'status' => 200];
+
+                    
+
                 }else{
                     $result = ['error' => 1];
+                    $result = 'The User Login Not Done.';
                 }                 
             }
             $this->set("result", $result);
