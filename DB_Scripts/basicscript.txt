@@ -96,3 +96,11 @@ ALTER TABLE `modules` CHANGE `id` `id` INT(32) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `crop` CHANGE `id` `id` INT(32) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `crop_images` CHANGE `id` `id` INT(32) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `farmerx`.`onetimepassword` (
+  `id` INT(32) NOT NULL AUTO_INCREMENT , 
+  `email` VARCHAR(200) NOT NULL , 
+  `otp` VARCHAR(200) NOT NULL , 
+  `createdon` DATETIME NOT NULL , 
+  PRIMARY KEY (`id`)
+  ) ENGINE = InnoDB;

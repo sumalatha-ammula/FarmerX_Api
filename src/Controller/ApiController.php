@@ -40,6 +40,10 @@
             $this->loadModel('CropImages');
             $this->loadComponent("Media");
             $this->loadModel("Modules");
+            $this->loadModel("Onetimepassword");
+            $this->loadComponent("Email");
+
+
         }
 
         public function register(){
@@ -170,11 +174,121 @@
 
                 }else{
                     $result = ['error' => 1];
-                    $result = 'The User Login Not Done.';
+                    // $result = 'The User Login Not Done.';
                 }                 
             }
             $this->set("result", $result);
         }
 
+        public function changepassword(){
+            $result = [];
+            $result = ['error' => 1,];
+            $this->request->is('post');
+            $data = $this->request->getData(); 
+            // debug($data);
+            if($data['newpassword'] === $data['confirmpwd']){
+                $users = $this->User->find('all')
+                ->select(['id'])
+                ->where(['password' => $data['curpassword'] ])
+                ->toArray();
+              
+                $userdataRecord = $this->User->get( $users[0]['id']);
+                $userdataRecord->password = $data['newpassword'];
+                $this->User->save($userdataRecord);
+                $result = [
+                    'error'=>0, 'status'=> 200,
+               ];
+                
+            }
+            $this->set ("result",$result);
+        }
+
+        public function sendotpresetpwd(){
+            $result = [];
+            $data = $this->request->getData();
+            debug($data);
+            // die;
+            $useremail = $this->User->find('all')
+            ->select(['email','id'])
+            ->where(['email'=>$data['email'] ])->toArray();
+             debug( $useremail[0]['email']);
+            if(count($useremail) == 1){
+           
+                $otp = random_int(000001,999999);
+               
+                $currentTime = FrozenTime::now();
+                debug($otp);
+               $newOtpEntity = $this->Onetimepassword->newEmptyEntity();
+               $newOtpEntity->email = $useremail[0]['email'];
+               
+               $newOtpEntity->otp = $otp;
+               $newOtpEntity->createdon = date("Y-m-d");
+            if ($this->Onetimepassword->save($newOtpEntity)) {
+                    $result['message'] = "OTP saved successfully";
+        
+                } 
+            } 
+            $conf=[];
+            $conf['host'] = 'ssl://smtp.gmail.com';
+            $conf['port'] = 465;
+            $conf['username'] = 'yenibhavya0508@gmail.com';
+            $conf['password'] = 'tpqujcgroydpzloc';
+            $conf['fromemail'] = "yenibhavya0508@gmail.com";
+            $conf['sender'] = "FarmerX";
+            if(!empty($useremail)){
+                // debug($useremail[0]['email']);
+            $emailsend['email'] = $useremail[0]->email;
+            $mailtext['otp'] = $otp;
+            }else{
+                $emailsend['email']='test12@gmail.com';
+                $mailtext['otp']= 1234;
+            }
+    
+
+            $this->Email->sendotpmail($conf, $emailsend['email'], " Your OTP for reset password",$mailtext);
+        
+            $result['email'] = $emailsend ? $emailsend['email'] : null;
+            $result['OTP'] = $mailtext;
+            $this->set ("result",$result);
+
+        }
+
+        public function sendingresetotp(){
+            $result = [];
+            $result ['error'] = 1;
+            $data = $this->request->getData();
+            $sendOtp = $this->Onetimepassword->find('all')
+            ->select(['otp'])
+            ->where(['otp'=>$data['otp'] ])->toArray();
+            // debug( $sendOtp);
+            if(isset($sendOtp[0]['otp'])){
+                $value = $sendOtp[0]['otp'];
+            $result = ['error'=>0, 'status'=> 200,'otp'=>$value ];
+        }else{
+            $value = null;
+            $result ['error'] = 1;
+        }
+            $this->set ("result",$result);
+        }
+
+        public function resetpassword(){
+            $result = [];
+            $result ['error'] = 1;
+            $data = $this->request->getData();
+            // debug($data);
+            $useremail = $this->User->find('all')
+            ->select(['id'])
+            ->where(['email'=>$data['email'] ])->toArray();
+            // debug($useremail);
+            if($useremail!=0){
+            $userdataRecord = $this->User->get( $useremail[0]['id']);
+            $userdataRecord->password = $data['newpassword'];
+            $this->User->save($userdataRecord);
+            $result = [
+                'error'=>0, 'status'=> 200,
+           ];
+        }
+        $this->set ("result",$result);
+        }
 
     }
