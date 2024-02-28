@@ -95,7 +95,7 @@
             $adUpdP_Data->category = $data['category'];
             $adUpdP_Data->name = $data['name'];
             $adUpdP_Data->description = $data['description'];
-            $adUpdP_Data->photo = $this->Media->upload($data['photo'][0], 'Crop');
+            $adUpdP_Data->photo = $this->Media->upload($data['photo'], 'Crop');
             $adUpdP_Data->qty = $data['qty'];
             $adUpdP_Data->quality = $data['quality'];
             $adUpdP_Data->price = $data['price'];
