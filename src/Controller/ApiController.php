@@ -101,24 +101,24 @@
             $adUpdP_Data->price = $data['price'];
             $adUpdP_Data->location = $data['location'];
             $adUpdP_Data->address = $data['address'];
-            $adUpdP_Data->created_by = $data['created_by'];
-            $adUpdP_Data->status = $data['status'];
+            $adUpdP_Data->created_by = 1;
+            $adUpdP_Data->status = 1;
             $addpT_Data->save($adUpdP_Data);
-            $lastproduct = $this->Crop->find('all')->last();
-            $lastRecordId = $lastproduct->id;
-            if(!empty($data['photo'])){
-                $photos = $data['photo']; // Assuming $data['photo'] is an array of photos
-                unset($photos[0]);
-                foreach ($photos as $photo) {
-                    $addciT_Data = TableRegistry::get('CropImages');
-                    $adUpdCP_Data = $this->CropImages->newEmptyEntity();
-                    $adUpdCP_Data->crop_id = $lastRecordId;
-                    $adUpdCP_Data->location = $this->Media->upload($photo, 'Crop');
-                    // $adUpdCP_Data->uploaded_on = $data['uploaded_on'];
-                    $addciT_Data->save($adUpdCP_Data); 
-                    $result ['massage'] = 'The Crop Data and cropimages Data  has been saved.';
-                }
-            }
+            // $lastproduct = $this->Crop->find('all')->last();
+            // $lastRecordId = $lastproduct->id;
+            // if(!empty($data['photo'])){
+            //     $photos = $data['photo']; // Assuming $data['photo'] is an array of photos
+            //     unset($photos[0]);
+            //     foreach ($photos as $photo) {
+            //         $addciT_Data = TableRegistry::get('CropImages');
+            //         $adUpdCP_Data = $this->CropImages->newEmptyEntity();
+            //         $adUpdCP_Data->crop_id = $lastRecordId;
+            //         $adUpdCP_Data->location = $this->Media->upload($photo, 'Crop');
+            //         // $adUpdCP_Data->uploaded_on = $data['uploaded_on'];
+            //         $addciT_Data->save($adUpdCP_Data); 
+            //         $result ['massage'] = 'The Crop Data and cropimages Data  has been saved.';
+            //     }
+            // }
             $this->set("result", $result);
         }
         
