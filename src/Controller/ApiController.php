@@ -126,7 +126,7 @@
             $result=[];
             $result['error'] = 0;
             $results = $this->Crop->find('all')
-            ->select(['name', 'qty', 'price', 'location', 'photo'])
+            ->select(['id','name','category', 'qty', 'price','description', 'location', 'photo'])
             ->toArray();
             $result = ['error' => 1, 'status' => 200, 'data'=>$results ];
              $this->set("result", $result);
@@ -134,8 +134,11 @@
         public function cropdetails(){
             $result=[];
             $result['error'] = 0;
+            $data = $this->request->getdata();
+            // debug($data);
             $results = $this->Crop->find('all')
-            ->select(['name', 'qty', 'price', 'location', 'photo', 'description', 'quality', 'location', 'address'])
+            ->where(['id'=>$data['id']])
+            ->select(['name','category', 'qty', 'price', 'location', 'photo', 'description', 'quality', 'location', 'address'])
             ->toArray();
             $result = ['error' => 1, 'status' => 200, 'data'=>$results ];
              $this->set("result", $result);
@@ -206,18 +209,18 @@
         public function sendotpresetpwd(){
             $result = [];
             $data = $this->request->getData();
-            debug($data);
+            // debug($data);
             // die;
             $useremail = $this->User->find('all')
             ->select(['email','id'])
             ->where(['email'=>$data['email'] ])->toArray();
-             debug( $useremail[0]['email']);
+            //  debug( $useremail[0]['email']);
             if(count($useremail) == 1){
            
                 $otp = random_int(000001,999999);
                
                 $currentTime = FrozenTime::now();
-                debug($otp);
+                // debug($otp);
                $newOtpEntity = $this->Onetimepassword->newEmptyEntity();
                $newOtpEntity->email = $useremail[0]['email'];
                
