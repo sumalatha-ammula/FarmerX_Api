@@ -51,8 +51,7 @@
             if($this->request->is('post')){
                 $result=[];
                 $data = $this->request->getdata();
-                // debug($data);
-                // die;
+                
                 $addrT_Data = TableRegistry::get('User');
                 $adUpdr_Data= $this->User->newEmptyEntity();
                 $adUpdr_Data->name =  $data['username'];
@@ -79,7 +78,9 @@
                 $adM_Data->created_by =  $lastRecordId;
                 $adM_Data->status =  1;
                 $addrT_Data->save($adM_Data); 
-                $result ['massage']= 'The register Data and register module has been saved.';
+                // $result ['massage']= 'The register Data and register module has been saved.';
+                $result = ['error' => 0, 'status' => 200];
+
 
             }
             $this->set("result", $result);
@@ -89,6 +90,7 @@
         public function addcrop(){
             $result=[];
             $data = $this->request->getData();
+            if($data['id']==null){
             $addpT_Data = TableRegistry::get('Crop');
             $adUpdP_Data = $this->Crop->newEmptyEntity();
             $adUpdP_Data->user_id = $data['user_id'];
@@ -104,6 +106,25 @@
             $adUpdP_Data->created_by = 1;
             $adUpdP_Data->status = 1;
             $addpT_Data->save($adUpdP_Data);
+            }
+            else{
+                $addpT_Data = $this->Crop->get($data['id']); 
+                // debug($data['id']);
+                $adUpdP_Data=[];
+                $adUpdP_Data->user_id = $data['user_id'];
+            $adUpdP_Data->category = $data['category'];
+            $adUpdP_Data->name = $data['name'];
+            $adUpdP_Data->description = $data['description'];
+            $adUpdP_Data->photo = $this->Media->upload($data['photo'], 'Crop');
+            $adUpdP_Data->qty = $data['qty'];
+            $adUpdP_Data->quality = $data['quality'];
+            $adUpdP_Data->price = $data['price'];
+            $adUpdP_Data->location = $data['location'];
+            $adUpdP_Data->address = $data['address'];
+            $adUpdP_Data->created_by = 1;
+            $adUpdP_Data->status = 1;
+            $addpT_Data->save($adUpdP_Data);    
+            }
             // $lastproduct = $this->Crop->find('all')->last();
             // $lastRecordId = $lastproduct->id;
             // if(!empty($data['photo'])){
@@ -121,74 +142,11 @@
             // }
             $this->set("result", $result);
         }
-        
-        public function listofcrop(){
-            $result=[];
-            $result['error'] = 0;
-            $results = $this->Crop->find('all')
-            ->select(['id','name','category', 'qty', 'price','description', 'location', 'photo'])
-            ->toArray();
-            $result = ['error' => 1, 'status' => 200, 'data'=>$results ];
-             $this->set("result", $result);
-        }
-        public function cropdetails(){
-            $result=[];
-            $result['error'] = 0;
-            $data = $this->request->getdata();
-            // debug($data);
-            $results = $this->Crop->find('all')
-            ->where(['id'=>$data['id']])
-            ->select(['name','category', 'qty', 'price', 'location', 'photo', 'description', 'quality', 'location', 'address'])
-            ->toArray();
-            $result = ['error' => 1, 'status' => 200, 'data'=>$results ];
-             $this->set("result", $result);
-
-        }
-        private function generatetoken() {
-            $token = bin2hex(random_bytes(16));
-            return $token;
-         }
-
-        public function login(){
-            $result=[];
-            
-            if($this->request->is('post')){
-                $data = $this->request->getdata(); 
-                // debug($data);
-                // die;               
-                $userddata = $this->User->find('all')
-                ->where([
-                    'password' => $data['password'], 'name' => $data['username']
-            ])
-                ->toArray();  
-                // debug($userddata);              
-                if (count($userddata) == 1) {
-                    $lt = TableRegistry::get('User');
-                    $ld = $lt->get($userddata[0]->id);
-                    $ld->token = $this->generatetoken();
-                    $ld->deviceid = isset($data['deviceid']) ? $data['deviceid'] : '';
-                    $ld->deviceinfo = isset($data['deviceinfo']) ? $data['deviceinfo'] : '';
-                    $userddata[0]->token = $ld->token;
-                    $lt->save($ld);
-                    $result = 'The User Login Done.';
-                    $result = ['error' => 0,'member' => $userddata[0],'status' => 200];
-
-                    
-
-                }else{
-                    $result = ['error' => 1];
-                    // $result = 'The User Login Not Done.';
-                }                 
-            }
-            $this->set("result", $result);
-        }
-
         public function changepassword(){
             $result = [];
             $result = ['error' => 1,];
             $this->request->is('post');
             $data = $this->request->getData(); 
-            // debug($data);
             if($data['newpassword'] === $data['confirmpwd']){
                 $users = $this->User->find('all')
                 ->select(['id'])
@@ -205,20 +163,96 @@
             }
             $this->set ("result",$result);
         }
+        
+        
+        public function cropdetails(){
+            $result=[];
+            $result['error'] = 0;
+            $data = $this->request->getdata();
+            // debug($data);
+            $results = $this->Crop->find('all')
+            ->where(['id'=>$data['id']])
+            ->select(['name','category', 'qty', 'price', 'location', 'photo', 'description', 'quality', 'location', 'address'])
+            ->toArray();
+            $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
+             $this->set("result", $result);
+
+        }
+        private function generatetoken() {
+            $token = bin2hex(random_bytes(16));
+            return $token;
+         }
+
+         public function listofcrop(){
+            $result=[];
+            $result['error'] = 0;
+            $results = $this->Crop->find('all')
+            ->select(['id','name','category', 'qty', 'price','description', 'location', 'photo'])
+            ->toArray();
+            $result = ['error' => 1, 'status' => 200, 'data'=>$results ];
+             $this->set("result", $result);
+        }
+
+        public function login(){
+            $result=[];            
+            if($this->request->is('post')){
+                $data = $this->request->getdata();                             
+                $userddata = $this->User->find('all')
+                ->where([
+                    'password' => $data['password'], 'name' => $data['username']
+            ])
+                ->toArray();  
+                if (count($userddata) == 1) {
+                    $lt = TableRegistry::get('User');
+                    $ld = $lt->get($userddata[0]->id);
+                    $ld->token = $this->generatetoken();
+                    $ld->deviceid = isset($data['deviceid']) ? $data['deviceid'] : '';
+                    $ld->deviceinfo = isset($data['deviceinfo']) ? $data['deviceinfo'] : '';
+                    $userddata[0]->token = $ld->token;
+                    $lt->save($ld);
+                    $result = 'The User Login Done.';
+                    $result = ['error' => 0,'member' => $userddata[0],'status' => 200];
+
+                    
+
+                }else{
+                    $result = ['error' => 1];
+                }                 
+            }
+            $this->set("result", $result);
+        }
+
+        
+        
+        public function resetpassword(){
+            $result = [];
+            $result ['error'] = 1;
+            $data = $this->request->getData();
+            $useremail = $this->User->find('all')
+            ->select(['id'])
+            ->where(['email'=>$data['email'] ])->toArray();
+            if($useremail!=0){
+            $userdataRecord = $this->User->get( $useremail[0]['id']);
+            $userdataRecord->password = $data['newpassword'];
+            $this->User->save($userdataRecord);
+            $result = [
+                'error'=>0, 'status'=> 200,
+           ];
+        }
+        $this->set ("result",$result);
+        }
+
+
 
         public function sendotpresetpwd(){
             $result = [];
-            $data = $this->request->getData();
-            // debug($data);
-            // die;
+            $data = $this->request->getData();           
             $useremail = $this->User->find('all')
             ->select(['email','id'])
             ->where(['email'=>$data['email'] ])->toArray();
-            //  debug( $useremail[0]['email']);
             if(count($useremail) == 1){           
                 $otp = random_int(000001,999999);               
                 $currentTime = FrozenTime::now();
-                // debug($otp);
                $newOtpEntity = $this->Onetimepassword->newEmptyEntity();
                $newOtpEntity->email = $useremail[0]['email'];               
                $newOtpEntity->otp = $otp;
@@ -235,7 +269,6 @@
             $conf['fromemail'] = "yenibhavya0508@gmail.com";
             $conf['sender'] = "FarmerX";
             if(!empty($useremail)){
-                // debug($useremail[0]['email']);
             $emailsend['email'] = $useremail[0]->email;
             $mailtext['otp'] = $otp;
             }else{
@@ -259,7 +292,6 @@
             $sendOtp = $this->Onetimepassword->find('all')
             ->select(['otp'])
             ->where(['otp'=>$data['otp'] ])->toArray();
-            // debug( $sendOtp);
             if(isset($sendOtp[0]['otp'])){
                 $value = $sendOtp[0]['otp'];
             $result = ['error'=>0, 'status'=> 200,'otp'=>$value ];
@@ -270,25 +302,7 @@
             $this->set ("result",$result);
         }
 
-        public function resetpassword(){
-            $result = [];
-            $result ['error'] = 1;
-            $data = $this->request->getData();
-            // debug($data);
-            $useremail = $this->User->find('all')
-            ->select(['id'])
-            ->where(['email'=>$data['email'] ])->toArray();
-            // debug($useremail);
-            if($useremail!=0){
-            $userdataRecord = $this->User->get( $useremail[0]['id']);
-            $userdataRecord->password = $data['newpassword'];
-            $this->User->save($userdataRecord);
-            $result = [
-                'error'=>0, 'status'=> 200,
-           ];
-        }
-        $this->set ("result",$result);
-        }
+        
 
     public function userdata(){
         $result = [];
@@ -296,7 +310,6 @@
     $usrdata = $this->User->find('all')
     ->contain(['Modules','Crop'])
     ->where(["User.id"=>$data['id']])->toArray();
-    // debug($usrdata);
     $result = [
         'error'=> 0,'userdata'=> $usrdata
     ];
