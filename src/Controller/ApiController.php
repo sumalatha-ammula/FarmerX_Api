@@ -215,20 +215,16 @@
             ->select(['email','id'])
             ->where(['email'=>$data['email'] ])->toArray();
             //  debug( $useremail[0]['email']);
-            if(count($useremail) == 1){
-           
-                $otp = random_int(000001,999999);
-               
+            if(count($useremail) == 1){           
+                $otp = random_int(000001,999999);               
                 $currentTime = FrozenTime::now();
                 // debug($otp);
                $newOtpEntity = $this->Onetimepassword->newEmptyEntity();
-               $newOtpEntity->email = $useremail[0]['email'];
-               
+               $newOtpEntity->email = $useremail[0]['email'];               
                $newOtpEntity->otp = $otp;
                $newOtpEntity->createdon = date("Y-m-d");
             if ($this->Onetimepassword->save($newOtpEntity)) {
-                    $result['message'] = "OTP saved successfully";
-        
+                    $result['message'] = "OTP saved successfully";        
                 } 
             } 
             $conf=[];
@@ -293,5 +289,21 @@
         }
         $this->set ("result",$result);
         }
+
+    public function userdata(){
+        $result = [];
+       $data = $this->request->getdata();
+    $usrdata = $this->User->find('all')
+    ->contain(['Modules','Crop'])
+    ->where(["User.id"=>$data['id']])->toArray();
+    // debug($usrdata);
+    $result = [
+        'error'=> 0,'userdata'=> $usrdata
+    ];
+    $this->set ("result",$result);
+
+
+
+    }    
 
     }

@@ -56,6 +56,16 @@ class UserTable extends Table
             'targetForeignKey' => 'module_id',
             'joinTable' => 'user_modules',
         ]);
+        $this->belongsTo('Modules', [
+            'foreignKey' => 'created_by',
+            'joinType' => 'INNER',
+      ]);
+
+      $this->hasMany('Crop', [
+        'foreignKey' => 'user_id',
+        'joinType' => 'INNER',
+  ]);
+
     }
 
     /**
