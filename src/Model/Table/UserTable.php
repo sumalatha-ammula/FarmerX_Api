@@ -65,7 +65,6 @@ class UserTable extends Table
 //         'foreignKey' => 'user_id',
 //         'joinType' => 'INNER',
 //   ]);
-
     }
 
     /**
@@ -79,13 +78,11 @@ class UserTable extends Table
         $validator
             ->scalar('name')
             ->maxLength('name', 100)
-            ->requirePresence('name', 'create')
-            ->notEmptyString('name');
+            ->allowEmptyString('name');
 
         $validator
             ->email('email')
-            ->requirePresence('email', 'create')
-            ->notEmptyString('email');
+            ->allowEmptyString('email');
 
         $validator
             ->scalar('phone')

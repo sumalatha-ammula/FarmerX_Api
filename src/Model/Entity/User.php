@@ -9,8 +9,8 @@ use Cake\ORM\Entity;
  * User Entity
  *
  * @property int $id
- * @property string $name
- * @property string $email
+ * @property string|null $name
+ * @property string|null $email
  * @property string $phone
  * @property string $password
  * @property string|null $profile_img

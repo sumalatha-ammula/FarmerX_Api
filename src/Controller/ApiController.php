@@ -51,11 +51,12 @@
             if($this->request->is('post')){
                 $result=[];
                 $data = $this->request->getdata();
-                
+                // debug($data);
+                // die;
                 $addrT_Data = TableRegistry::get('User');
                 $adUpdr_Data= $this->User->newEmptyEntity();
-                $adUpdr_Data->name =  $data['username'];
-                $adUpdr_Data->email = $data['email'];
+                // $adUpdr_Data->name =  $data['username'];
+                // $adUpdr_Data->email = $data['email'];
                 $adUpdr_Data->phone = $data['mobile'];
                 // $adUpdr_Data->profile_img = $this->Media->upload($data['profile_img'], 'User_img');
                 // $adUpdr_Data->created_on = $data['created_on'];
@@ -67,22 +68,9 @@
                 $lastuser = $this->User->find('all')->last();
                 $lastRecordId = $lastuser->id;
             } 
+            $result = ['error' => 0, 'status' => 200];
 
-            if(!empty($data['mname'])){
-                $addrT_Data = TableRegistry::get('Modules');
-                $adM_Data= $this->Modules->newEmptyEntity();
-                $adM_Data->name =  $data['mname'];
-                // $adM_Data->subscription_type =  $data['subscription_type'];
-                // $adM_Data->expiry =  $data['expiry'];
-                // $adM_Data->created_on =  $data['created_on'];
-                $adM_Data->created_by =  $lastRecordId;
-                $adM_Data->status =  1;
-                $addrT_Data->save($adM_Data); 
-                // $result ['massage']= 'The register Data and register module has been saved.';
-                $result = ['error' => 0, 'status' => 200];
-
-
-            }
+            
             $this->set("result", $result);
         }
 
@@ -196,10 +184,12 @@
         public function login(){
             $result=[];            
             if($this->request->is('post')){
-                $data = $this->request->getdata();                             
+                $data = $this->request->getdata();  
+                // debug($data); 
+                // die;                          
                 $userddata = $this->User->find('all')
                 ->where([
-                    'password' => $data['password'], 'name' => $data['username']
+                    'password' => $data['password'], 'phone' => $data['mobilenumber']
             ])
                 ->toArray();  
                 if (count($userddata) == 1) {
