@@ -304,9 +304,30 @@
         'error'=> 0,'userdata'=> $usrdata
     ];
     $this->set ("result",$result);
-
-
-
     }    
+
+    public function editprofile(){
+        $result = [];
+        $result = ['error' => 1,];
+        $this->request->is('post');
+        $data = $this->request->getData(); 
+        // debug($data);
+        $results = $this->User->get($data['id']);        
+            $userdata ['name'] = $data['username'];
+            $userdata ['email'] = $data['email'];
+            $userdata ['mobile'] = $data['phone'];
+            $profiledata = $this->User->patchEntity($results,$userdata);
+            $this->User->save( $profiledata);
+       
+        $result = [
+            'error'=>0, 'status'=> 200, 'User'=> $results
+       ];
+
+        // $result = $this->FieldExecutive->find ( 'all' )
+        // ->where(['id' => $data['id']])->toArray();
+        // debug($data['id']) ;
+        // debug($result) ;
+        $this->set ("result",$result);
+    }
 
     }
