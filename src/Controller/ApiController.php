@@ -41,7 +41,9 @@
             $this->loadComponent("Media");
             $this->loadModel("Modules");
             $this->loadModel("Onetimepassword");
+            $this->loadModel("Transportation");
             $this->loadComponent("Email");
+
 
 
         }
@@ -77,8 +79,7 @@
 
         public function addcrop(){
             $result=[];
-            $data = $this->request->getData();
-            if($data['id']==null){
+            $data = $this->request->getData();           
             $addpT_Data = TableRegistry::get('Crop');
             $adUpdP_Data = $this->Crop->newEmptyEntity();
             $adUpdP_Data->user_id = $data['user_id'];
@@ -94,25 +95,25 @@
             $adUpdP_Data->created_by = 1;
             $adUpdP_Data->status = 1;
             $addpT_Data->save($adUpdP_Data);
-            }
-            else{
-                $addpT_Data = $this->Crop->get($data['id']); 
-                // debug($data['id']);
-                $adUpdP_Data=[];
-                $adUpdP_Data->user_id = $data['user_id'];
-            $adUpdP_Data->category = $data['category'];
-            $adUpdP_Data->name = $data['name'];
-            $adUpdP_Data->description = $data['description'];
-            $adUpdP_Data->photo = $this->Media->upload($data['photo'], 'Crop');
-            $adUpdP_Data->qty = $data['qty'];
-            $adUpdP_Data->quality = $data['quality'];
-            $adUpdP_Data->price = $data['price'];
-            $adUpdP_Data->location = $data['location'];
-            $adUpdP_Data->address = $data['address'];
-            $adUpdP_Data->created_by = 1;
-            $adUpdP_Data->status = 1;
-            $addpT_Data->save($adUpdP_Data);    
-            }
+          
+            // else{
+            //     $addpT_Data = $this->Crop->get($data['id']); 
+            //     // debug($data['id']);
+            //     $adUpdP_Data=[];
+            //     $adUpdP_Data->user_id = $data['user_id'];
+            // $adUpdP_Data->category = $data['category'];
+            // $adUpdP_Data->name = $data['name'];
+            // $adUpdP_Data->description = $data['description'];
+            // $adUpdP_Data->photo = $this->Media->upload($data['photo'], 'Crop');
+            // $adUpdP_Data->qty = $data['qty'];
+            // $adUpdP_Data->quality = $data['quality'];
+            // $adUpdP_Data->price = $data['price'];
+            // $adUpdP_Data->location = $data['location'];
+            // $adUpdP_Data->address = $data['address'];
+            // $adUpdP_Data->created_by = 1;
+            // $adUpdP_Data->status = 1;
+            // $addpT_Data->save($adUpdP_Data);    
+            // }
             // $lastproduct = $this->Crop->find('all')->last();
             // $lastRecordId = $lastproduct->id;
             // if(!empty($data['photo'])){
@@ -128,6 +129,26 @@
             //         $result ['massage'] = 'The Crop Data and cropimages Data  has been saved.';
             //     }
             // }
+            $this->set("result", $result);
+        }
+        public function addtransport(){
+            $result=[];
+            $data = $this->request->getData();           
+            $addpT_Data = TableRegistry::get('transportation');
+            $adUpdP_Data = $this->Transportation->newEmptyEntity();
+            $adUpdP_Data->user_id = $data['user_id'];
+            $adUpdP_Data->transport_category = $data['category'];
+            $adUpdP_Data->name = $data['name'];
+            $adUpdP_Data->description = $data['description'];
+            $adUpdP_Data->photo = $this->Media->upload($data['photo'], 'Crop');
+            $adUpdP_Data->capacity = $data['capacity'];
+            $adUpdP_Data->price_km = $data['price'];
+            $adUpdP_Data->contact_number = $data['contact'];
+
+            $adUpdP_Data->service_area = $data['address'];
+            $adUpdP_Data->created_by = 1;
+            $adUpdP_Data->status = 1;
+            $addpT_Data->save($adUpdP_Data);            
             $this->set("result", $result);
         }
         public function changepassword(){
@@ -179,6 +200,28 @@
             ->toArray();
             $result = ['error' => 1, 'status' => 200, 'data'=>$results ];
              $this->set("result", $result);
+        }
+        public function transportlist(){
+            $result=[];
+            $result['error'] = 0;
+            $results = $this->Transportation->find('all')
+            // ->select(['id','name','category', 'qty', 'price','description', 'location', 'photo'])
+            ->toArray();
+            $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
+             $this->set("result", $result);
+        }
+        public function transportdetails(){
+            $result=[];
+            $result['error'] = 0;
+            $data = $this->request->getdata();
+            // debug($data);
+            $results = $this->Transportation->find('all')
+            ->where(['id'=>$data['id']])
+            // ->select(['name','category', 'qty', 'price', 'location', 'photo', 'description', 'quality', 'location', 'address'])
+            ->toArray();
+            $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
+             $this->set("result", $result);
+
         }
 
         public function login(){
