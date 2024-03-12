@@ -122,3 +122,7 @@ CREATE TABLE `farmerx`.`onetimepassword` (
   `createdon` DATETIME NOT NULL , 
   PRIMARY KEY (`id`)
   ) ENGINE = InnoDB;
+
+  ALTER TABLE `onetimepassword` ADD `phone` INT(15) NOT NULL AFTER `createdon`;
+ALTER TABLE `onetimepassword` CHANGE `phone` `phone` VARCHAR(15) NOT NULL;
+ALTER TABLE `transportation` CHANGE `id` `id` INT(32) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);

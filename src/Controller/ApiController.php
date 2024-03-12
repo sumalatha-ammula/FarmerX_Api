@@ -43,6 +43,7 @@
             $this->loadModel("Onetimepassword");
             $this->loadModel("Transportation");
             $this->loadComponent("Email");
+            $this->loadComponent('Sms');
 
 
 
@@ -174,19 +175,19 @@
         }
         
         
-        public function cropdetails(){
-            $result=[];
-            $result['error'] = 0;
-            $data = $this->request->getdata();
-            // debug($data);
-            $results = $this->Crop->find('all')
-            ->where(['id'=>$data['id']])
-            ->select(['name','category', 'qty', 'price', 'location', 'photo', 'description', 'quality', 'location', 'address'])
-            ->toArray();
-            $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
-             $this->set("result", $result);
+        // public function cropdetails(){
+        //     $result=[];
+        //     $result['error'] = 0;
+        //     $data = $this->request->getdata();
+        //     // debug($data);
+        //     $results = $this->Crop->find('all')
+        //     ->where(['id'=>$data['id']])
+        //     ->select(['name','category', 'qty', 'price', 'location', 'photo', 'description', 'quality', 'location', 'address'])
+        //     ->toArray();
+        //     $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
+        //      $this->set("result", $result);
 
-        }
+        // }
         private function generatetoken() {
             $token = bin2hex(random_bytes(16));
             return $token;
@@ -256,16 +257,74 @@
         }
 
         
+        // public function sendotpresetpwd(){
+        //     $result = [];
+        //     $data = $this->request->getData();           
+        //     $useremail = $this->User->find('all')
+        //     ->select(['email','id'])
+        //     ->where(['email'=>$data['email'] ])->toArray();
+        //     if(count($useremail) == 1){           
+        //         $otp = random_int(000001,999999);               
+        //         $currentTime = FrozenTime::now();
+        //        $newOtpEntity = $this->Onetimepassword->newEmptyEntity();
+        //        $newOtpEntity->email = $useremail[0]['email'];               
+        //        $newOtpEntity->otp = $otp;
+        //        $newOtpEntity->createdon = date("Y-m-d");
+        //     if ($this->Onetimepassword->save($newOtpEntity)) {
+        //             $result['message'] = "OTP saved successfully";        
+        //         } 
+        //     } 
+        //     $conf=[];
+        //     $conf['host'] = 'ssl://smtp.gmail.com';
+        //     $conf['port'] = 465;
+        //     $conf['username'] = 'yenibhavya0508@gmail.com';
+        //     $conf['password'] = 'tpqujcgroydpzloc';
+        //     $conf['fromemail'] = "yenibhavya0508@gmail.com";
+        //     $conf['sender'] = "FarmerX";
+        //     if(!empty($useremail)){
+        //     $emailsend['email'] = $useremail[0]->email;
+        //     $mailtext['otp'] = $otp;
+        //     }else{
+        //         $emailsend['email']='test12@gmail.com';
+        //         $mailtext['otp']= 1234;
+        //     }
+    
+
+        //     $this->Email->sendotpmail($conf, $emailsend['email'], " Your OTP for reset password",$mailtext);
         
+        //     $result['email'] = $emailsend ? $emailsend['email'] : null;
+        //     $result['OTP'] = $mailtext;
+        //     $this->set ("result",$result);
+
+        // }
+
+        // public function sendingresetotp(){
+        //     $result = [];
+        //     $result ['error'] = 1;
+        //     $data = $this->request->getData();
+        //     $sendOtp = $this->Onetimepassword->find('all')
+        //     ->select(['otp'])
+        //     ->where(['otp'=>$data['otp'] ])->toArray();
+        //     if(isset($sendOtp[0]['otp'])){
+        //         $value = $sendOtp[0]['otp'];
+        //     $result = ['error'=>0, 'status'=> 200,'otp'=>$value ];
+        // }else{
+        //     $value = null;
+        //     $result ['error'] = 1;
+        // }
+        //     $this->set ("result",$result);
+        // }
+
         public function resetpassword(){
             $result = [];
             $result ['error'] = 1;
             $data = $this->request->getData();
-            $useremail = $this->User->find('all')
+            $usermobile = $this->User->find('all')
             ->select(['id'])
-            ->where(['email'=>$data['email'] ])->toArray();
-            if($useremail!=0){
-            $userdataRecord = $this->User->get( $useremail[0]['id']);
+            ->where(['phone'=>$data['phone'] ])->toArray();
+            debug($usermobile);
+            if($usermobile!=0){
+            $userdataRecord = $this->User->get( $usermobile[0]['id']);
             $userdataRecord->password = $data['newpassword'];
             $this->User->save($userdataRecord);
             $result = [
@@ -275,68 +334,51 @@
         $this->set ("result",$result);
         }
 
-
-
-        public function sendotpresetpwd(){
-            $result = [];
+    public function sendotpresetpwd(){
+        $result = [];
             $data = $this->request->getData();           
-            $useremail = $this->User->find('all')
-            ->select(['email','id'])
-            ->where(['email'=>$data['email'] ])->toArray();
-            if(count($useremail) == 1){           
-                $otp = random_int(000001,999999);               
-                $currentTime = FrozenTime::now();
-               $newOtpEntity = $this->Onetimepassword->newEmptyEntity();
-               $newOtpEntity->email = $useremail[0]['email'];               
-               $newOtpEntity->otp = $otp;
-               $newOtpEntity->createdon = date("Y-m-d");
-            if ($this->Onetimepassword->save($newOtpEntity)) {
-                    $result['message'] = "OTP saved successfully";        
-                } 
+            $usermobile = $this->User->find('all')
+            ->select(['phone','id'])
+            ->where(['phone'=>$data['phone'] ])->toArray();
+            // debug($usermobile); 
+            if(count($usermobile) == 1){  
+                $d = $usermobile[0]['phone']; 
+             
+       debug($d);
+                        $otp = random_int(000001,999999);  
+                        $this->Sms->forgotpasswordsmsotp( $d,  $otp);             
+                        $currentTime = FrozenTime::now();
+                       $newOtpEntity = $this->Onetimepassword->newEmptyEntity();
+                       $newOtpEntity->phone = $usermobile[0]['phone'];                
+                       $newOtpEntity->otp = $otp;
+                       $newOtpEntity->createdon = date("Y-m-d");
+                       debug($newOtpEntity);
+                    if ($this->Onetimepassword->save($newOtpEntity)) {
+                            $result['message'] = "OTP saved successfully"; 
+                                 
+                    } 
+                    $result['OTP'] = $otp; 
+                   $result['error'] = 0; 
             } 
-            $conf=[];
-            $conf['host'] = 'ssl://smtp.gmail.com';
-            $conf['port'] = 465;
-            $conf['username'] = 'yenibhavya0508@gmail.com';
-            $conf['password'] = 'tpqujcgroydpzloc';
-            $conf['fromemail'] = "yenibhavya0508@gmail.com";
-            $conf['sender'] = "FarmerX";
-            if(!empty($useremail)){
-            $emailsend['email'] = $useremail[0]->email;
-            $mailtext['otp'] = $otp;
+            $this->set ("result",$result);                   
+
+    }
+    public function sendingresetotp(){
+                $result = [];
+                $result ['error'] = 1;
+                $data = $this->request->getData();
+                $sendOtp = $this->Onetimepassword->find('all')
+                ->select(['otp'])
+                ->where(['otp'=>$data['otp'] ])->toArray();
+                if(isset($sendOtp[0]['otp'])){
+                    $value = $sendOtp[0]['otp'];
+                $result = ['error'=>0, 'status'=> 200,'otp'=>$value ];
             }else{
-                $emailsend['email']='test12@gmail.com';
-                $mailtext['otp']= 1234;
+                $value = null;
+                $result ['error'] = 1;
             }
-    
-
-            $this->Email->sendotpmail($conf, $emailsend['email'], " Your OTP for reset password",$mailtext);
-        
-            $result['email'] = $emailsend ? $emailsend['email'] : null;
-            $result['OTP'] = $mailtext;
-            $this->set ("result",$result);
-
-        }
-
-        public function sendingresetotp(){
-            $result = [];
-            $result ['error'] = 1;
-            $data = $this->request->getData();
-            $sendOtp = $this->Onetimepassword->find('all')
-            ->select(['otp'])
-            ->where(['otp'=>$data['otp'] ])->toArray();
-            if(isset($sendOtp[0]['otp'])){
-                $value = $sendOtp[0]['otp'];
-            $result = ['error'=>0, 'status'=> 200,'otp'=>$value ];
-        }else{
-            $value = null;
-            $result ['error'] = 1;
-        }
-            $this->set ("result",$result);
-        }
-
-        
-
+                $this->set ("result",$result);
+            }
     public function userdata(){
         $result = [];
        $data = $this->request->getdata();
@@ -371,6 +413,55 @@
         // debug($data['id']) ;
         // debug($result) ;
         $this->set ("result",$result);
+    }
+
+
+    public function transport(){
+        $result=[];
+        $result['error'] = 0;
+        $results = $this->Transportation->find('all')
+        ->toArray();
+        $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
+         $this->set("result", $result);
+    }
+    
+    public function personaltransport(){
+        $result=[];
+        $result['error'] = 0;
+        $data = $this->request->getdata();
+        $results = $this->Transportation->find('all')
+        ->where(['user_id'=>$data['id']])->order(['id' => 'DESC'])->limit(1)
+        ->toArray();
+        $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
+         $this->set("result", $result);
+
+}
+
+
+    public function listcrop(){
+        $result=[];
+        $result['error'] = 0;
+        $results = $this->Crop->find('all')->order(['id' => 'DESC'])
+        ->limit(5)
+        ->select(['id','name','category', 'qty', 'price','description', 'location', 'photo'])
+        ->toArray();
+        $result = ['error' => 1, 'status' => 200, 'data'=>$results ];
+         $this->set("result", $result);
+    }
+
+    
+
+    public function searchdata(){
+        $result=[];
+        $transportation = $this->Transportation->find('all')
+        ->toArray();
+
+        $crop = $this->Crop->find('all')
+        ->toArray();
+        $results = array_merge($transportation, $crop);
+        debug($results);
+        $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
+        $this->set("result", $result);
     }
 
     }
