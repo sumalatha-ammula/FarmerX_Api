@@ -175,19 +175,19 @@
         }
         
         
-        // public function cropdetails(){
-        //     $result=[];
-        //     $result['error'] = 0;
-        //     $data = $this->request->getdata();
-        //     // debug($data);
-        //     $results = $this->Crop->find('all')
-        //     ->where(['id'=>$data['id']])
-        //     ->select(['name','category', 'qty', 'price', 'location', 'photo', 'description', 'quality', 'location', 'address'])
-        //     ->toArray();
-        //     $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
-        //      $this->set("result", $result);
+        public function cropdetails(){
+            $result=[];
+            $result['error'] = 0;
+            $data = $this->request->getdata();
+            // debug($data);
+            $results = $this->Crop->find('all')
+            ->where(['id'=>$data['id']])
+            ->select(['name','category', 'qty', 'price', 'location', 'photo', 'description', 'quality', 'location', 'address'])
+            ->toArray();
+            $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
+             $this->set("result", $result);
 
-        // }
+        }
         private function generatetoken() {
             $token = bin2hex(random_bytes(16));
             return $token;
@@ -196,10 +196,10 @@
          public function listofcrop(){
             $result=[];
             $result['error'] = 0;
-            $results = $this->Crop->find('all')
+            $results = $this->Crop->find('all')->order(['id' => 'DESC'])
             ->select(['id','name','category', 'qty', 'price','description', 'location', 'photo'])
             ->toArray();
-            $result = ['error' => 1, 'status' => 200, 'data'=>$results ];
+            $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
              $this->set("result", $result);
         }
         public function transportlist(){
@@ -322,7 +322,6 @@
             $usermobile = $this->User->find('all')
             ->select(['id'])
             ->where(['phone'=>$data['phone'] ])->toArray();
-            debug($usermobile);
             if($usermobile!=0){
             $userdataRecord = $this->User->get( $usermobile[0]['id']);
             $userdataRecord->password = $data['newpassword'];
@@ -340,11 +339,9 @@
             $usermobile = $this->User->find('all')
             ->select(['phone','id'])
             ->where(['phone'=>$data['phone'] ])->toArray();
-            // debug($usermobile); 
             if(count($usermobile) == 1){  
                 $d = $usermobile[0]['phone']; 
              
-       debug($d);
                         $otp = random_int(000001,999999);  
                         $this->Sms->forgotpasswordsmsotp( $d,  $otp);             
                         $currentTime = FrozenTime::now();
@@ -352,7 +349,6 @@
                        $newOtpEntity->phone = $usermobile[0]['phone'];                
                        $newOtpEntity->otp = $otp;
                        $newOtpEntity->createdon = date("Y-m-d");
-                       debug($newOtpEntity);
                     if ($this->Onetimepassword->save($newOtpEntity)) {
                             $result['message'] = "OTP saved successfully"; 
                                  
@@ -396,7 +392,6 @@
         $result = ['error' => 1,];
         $this->request->is('post');
         $data = $this->request->getData(); 
-        // debug($data);
         $results = $this->User->get($data['id']);        
             $userdata ['name'] = $data['username'];
             $userdata ['email'] = $data['email'];
@@ -459,7 +454,7 @@
         $crop = $this->Crop->find('all')
         ->toArray();
         $results = array_merge($transportation, $crop);
-        debug($results);
+        // debug($results);
         $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
         $this->set("result", $result);
     }
