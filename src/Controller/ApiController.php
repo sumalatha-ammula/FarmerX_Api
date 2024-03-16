@@ -459,4 +459,26 @@
         $this->set("result", $result);
     }
 
+    public function saveProfileImage(){
+
+        $result = [];
+        $result = ['error' => 1,];
+        $this->request->is('post');
+        $data = $this->request->getData(); 
+        // debug($data);
+        $user = $this->User->get($data['id']); 
+
+        $profileImagePath = $this->Media->upload($data['photo'], 'User_img');
+        if ($profileImagePath) {
+            $user->profile_img = $profileImagePath;
+        
+            if ($this->User->save($user)) {
+            }
+        $result = [
+            'error'=>0, 'status'=> 200, 'User'=> $user
+       ];
+       $this->set ("result",$result);
+       }
+    }
+
     }
