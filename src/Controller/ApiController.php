@@ -96,6 +96,7 @@
             $adUpdP_Data->created_by = 1;
             $adUpdP_Data->status = 1;
             $addpT_Data->save($adUpdP_Data);
+            $result = ['error'=>0,'status'=>200];    
           
             // else{
             //     $addpT_Data = $this->Crop->get($data['id']); 
@@ -149,7 +150,8 @@
             $adUpdP_Data->service_area = $data['address'];
             $adUpdP_Data->created_by = 1;
             $adUpdP_Data->status = 1;
-            $addpT_Data->save($adUpdP_Data);            
+            $addpT_Data->save($adUpdP_Data);
+            $result = ['error'=>0,'status'=>200];            
             $this->set("result", $result);
         }
         public function changepassword(){
@@ -181,8 +183,8 @@
             $data = $this->request->getdata();
             // debug($data);
             $results = $this->Crop->find('all')
-            ->where(['id'=>$data['id']])
-            ->select(['name','category', 'qty', 'price', 'location', 'photo', 'description', 'quality', 'location', 'address'])
+            ->where(['Crop.id'=>$data['id']])->contain(["User"])
+            // ->select(['name','category', 'qty', 'price', 'location', 'photo', 'description', 'quality', 'location', 'address'])
             ->toArray();
             $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
              $this->set("result", $result);
@@ -205,8 +207,7 @@
         public function transportlist(){
             $result=[];
             $result['error'] = 0;
-            $results = $this->Transportation->find('all')
-            // ->select(['id','name','category', 'qty', 'price','description', 'location', 'photo'])
+            $results = $this->Transportation->find('all')->order(['id' => 'DESC'])
             ->toArray();
             $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
              $this->set("result", $result);
@@ -434,11 +435,15 @@
 
 
     public function listcrop(){
+         $data=$this->request->getdata();
+
         $result=[];
         $result['error'] = 0;
-        $results = $this->Crop->find('all')->order(['id' => 'DESC'])
+        $results = $this->Crop->find('all')
+        // ->contain(['User'])
+        ->order(['id' => 'DESC'])
+        // ->where(['User.id'=>$data['id']])
         ->limit(5)
-        ->select(['id','name','category', 'qty', 'price','description', 'location', 'photo'])
         ->toArray();
         $result = ['error' => 1, 'status' => 200, 'data'=>$results ];
          $this->set("result", $result);
