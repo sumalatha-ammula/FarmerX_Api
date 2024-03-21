@@ -46,6 +46,11 @@ class CropTable extends Table
         $this->hasMany('CropImages', [
             'foreignKey' => 'crop_id',
         ]);
+
+        $this->belongsTo('User', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**
