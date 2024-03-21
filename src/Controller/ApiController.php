@@ -397,17 +397,13 @@
             $userdata ['name'] = $data['username'];
             $userdata ['email'] = $data['email'];
             $userdata ['mobile'] = $data['phone'];
+            $userdata ['profile_img'] =$this->Media->upload($data['photo'], 'User_img');
             $profiledata = $this->User->patchEntity($results,$userdata);
             $this->User->save( $profiledata);
        
         $result = [
             'error'=>0, 'status'=> 200, 'User'=> $results
        ];
-
-        // $result = $this->FieldExecutive->find ( 'all' )
-        // ->where(['id' => $data['id']])->toArray();
-        // debug($data['id']) ;
-        // debug($result) ;
         $this->set ("result",$result);
     }
 
@@ -464,26 +460,26 @@
         $this->set("result", $result);
     }
 
-    public function saveProfileImage(){
+    // public function saveProfileImage(){
 
-        $result = [];
-        $result = ['error' => 1,];
-        $this->request->is('post');
-        $data = $this->request->getData(); 
-        // debug($data);
-        $user = $this->User->get($data['id']); 
+    //     $result = [];
+    //     $result = ['error' => 1,];
+    //     $this->request->is('post');
+    //     $data = $this->request->getData(); 
+    //     // debug($data);
+    //     $user = $this->User->get($data['id']); 
 
-        $profileImagePath = $this->Media->upload($data['photo'], 'User_img');
-        if ($profileImagePath) {
-            $user->profile_img = $profileImagePath;
+    //     $profileImagePath = $this->Media->upload($data['photo'], 'User_img');
+    //     if ($profileImagePath) {
+    //         $user->profile_img = $profileImagePath;
         
-            if ($this->User->save($user)) {
-            }
-        $result = [
-            'error'=>0, 'status'=> 200, 'User'=> $user
-       ];
-       $this->set ("result",$result);
-       }
-    }
+    //         if ($this->User->save($user)) {
+    //         }
+    //     $result = [
+    //         'error'=>0, 'status'=> 200, 'User'=> $user
+    //    ];
+    //    $this->set ("result",$result);
+    //    }
+    // }
 
     }
