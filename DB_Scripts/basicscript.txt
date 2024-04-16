@@ -125,4 +125,5 @@ CREATE TABLE `farmerx`.`onetimepassword` (
 
   ALTER TABLE `onetimepassword` ADD `phone` INT(15) NOT NULL AFTER `createdon`;
 ALTER TABLE `onetimepassword` CHANGE `phone` `phone` VARCHAR(15) NOT NULL;
+ALTER TABLE `onetimepassword` DROP `email`;
 ALTER TABLE `transportation` CHANGE `id` `id` INT(32) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
