@@ -201,6 +201,7 @@
             $results = $this->Crop->find('all')->order(['id' => 'DESC'])
             ->select(['id','name','category', 'qty', 'price','description', 'location', 'photo'])
             ->toArray();
+            
             $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
              $this->set("result", $result);
         }
@@ -441,7 +442,11 @@
         // ->where(['User.id'=>$data['id']])
         ->limit(5)
         ->toArray();
-        $result = ['error' => 1, 'status' => 200, 'data'=>$results ];
+        $userdata = $this->User->find('all')                        
+        ->select(['User.id', 'User.name', 'User.email', 'User.phone', 'User.profile_img',]) // Added 'User.user_id' to select                         ->contain(['Crop'])
+                         ->where(['User.id'=>$data['id']])
+                         ->toArray();
+        $result = ['error' => 1, 'status' => 200, 'data'=>$results, 'userdata'=>$userdata ];
          $this->set("result", $result);
     }
 
