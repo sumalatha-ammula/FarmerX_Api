@@ -44,6 +44,7 @@
             $this->loadModel("Transportation");
             $this->loadComponent("Email");
             $this->loadComponent('Sms');
+            $this->loadModel('Manpower');
 
 
 
@@ -259,63 +260,7 @@
         }
 
         
-        // public function sendotpresetpwd(){
-        //     $result = [];
-        //     $data = $this->request->getData();           
-        //     $useremail = $this->User->find('all')
-        //     ->select(['email','id'])
-        //     ->where(['email'=>$data['email'] ])->toArray();
-        //     if(count($useremail) == 1){           
-        //         $otp = random_int(000001,999999);               
-        //         $currentTime = FrozenTime::now();
-        //        $newOtpEntity = $this->Onetimepassword->newEmptyEntity();
-        //        $newOtpEntity->email = $useremail[0]['email'];               
-        //        $newOtpEntity->otp = $otp;
-        //        $newOtpEntity->createdon = date("Y-m-d");
-        //     if ($this->Onetimepassword->save($newOtpEntity)) {
-        //             $result['message'] = "OTP saved successfully";        
-        //         } 
-        //     } 
-        //     $conf=[];
-        //     $conf['host'] = 'ssl://smtp.gmail.com';
-        //     $conf['port'] = 465;
-        //     $conf['username'] = 'yenibhavya0508@gmail.com';
-        //     $conf['password'] = 'tpqujcgroydpzloc';
-        //     $conf['fromemail'] = "yenibhavya0508@gmail.com";
-        //     $conf['sender'] = "FarmerX";
-        //     if(!empty($useremail)){
-        //     $emailsend['email'] = $useremail[0]->email;
-        //     $mailtext['otp'] = $otp;
-        //     }else{
-        //         $emailsend['email']='test12@gmail.com';
-        //         $mailtext['otp']= 1234;
-        //     }
-    
-
-        //     $this->Email->sendotpmail($conf, $emailsend['email'], " Your OTP for reset password",$mailtext);
         
-        //     $result['email'] = $emailsend ? $emailsend['email'] : null;
-        //     $result['OTP'] = $mailtext;
-        //     $this->set ("result",$result);
-
-        // }
-
-        // public function sendingresetotp(){
-        //     $result = [];
-        //     $result ['error'] = 1;
-        //     $data = $this->request->getData();
-        //     $sendOtp = $this->Onetimepassword->find('all')
-        //     ->select(['otp'])
-        //     ->where(['otp'=>$data['otp'] ])->toArray();
-        //     if(isset($sendOtp[0]['otp'])){
-        //         $value = $sendOtp[0]['otp'];
-        //     $result = ['error'=>0, 'status'=> 200,'otp'=>$value ];
-        // }else{
-        //     $value = null;
-        //     $result ['error'] = 1;
-        // }
-        //     $this->set ("result",$result);
-        // }
 
         public function resetpassword(){
             $result = [];
@@ -442,11 +387,11 @@
         // ->where(['User.id'=>$data['id']])
         ->limit(5)
         ->toArray();
-        $userdata = $this->User->find('all')                        
-        ->select(['User.id', 'User.name', 'User.email', 'User.phone', 'User.profile_img',]) // Added 'User.user_id' to select                         ->contain(['Crop'])
-                         ->where(['User.id'=>$data['id']])
-                         ->toArray();
-        $result = ['error' => 1, 'status' => 200, 'data'=>$results, 'userdata'=>$userdata ];
+        // $userdata = $this->User->find('all')                        
+        // ->select(['User.id', 'User.name', 'User.email', 'User.phone', 'User.profile_img',]) // Added 'User.user_id' to select                         ->contain(['Crop'])
+        //                  ->where(['id'=>$data['id']])
+        //                  ->toArray();
+        $result = ['error' => 1, 'status' => 200, 'data'=>$results];
          $this->set("result", $result);
     }
 
@@ -459,32 +404,95 @@
 
         $crop = $this->Crop->find('all')
         ->toArray();
-        $results = array_merge($transportation, $crop);
+        $jobsdata = $this->Manpower->find('all')->toArray();
+        $results = array_merge($transportation, $crop,$jobsdata);
         // debug($results);
         $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
         $this->set("result", $result);
     }
 
-    // public function saveProfileImage(){
+    // // public function saveProfileImage(){
 
-    //     $result = [];
-    //     $result = ['error' => 1,];
-    //     $this->request->is('post');
-    //     $data = $this->request->getData(); 
-    //     // debug($data);
-    //     $user = $this->User->get($data['id']); 
+    // //     $result = [];
+    // //     $result = ['error' => 1,];
+    // //     $this->request->is('post');
+    // //     $data = $this->request->getData(); 
+    // //     // debug($data);
+    // //     $user = $this->User->get($data['id']); 
 
-    //     $profileImagePath = $this->Media->upload($data['photo'], 'User_img');
-    //     if ($profileImagePath) {
-    //         $user->profile_img = $profileImagePath;
+    // //     $profileImagePath = $this->Media->upload($data['photo'], 'User_img');
+    // //     if ($profileImagePath) {
+    // //         $user->profile_img = $profileImagePath;
         
-    //         if ($this->User->save($user)) {
-    //         }
-    //     $result = [
-    //         'error'=>0, 'status'=> 200, 'User'=> $user
-    //    ];
-    //    $this->set ("result",$result);
-    //    }
+    // //         if ($this->User->save($user)) {
+    // //         }
+    // //     $result = [
+    // //         'error'=>0, 'status'=> 200, 'User'=> $user
+    // //    ];
+    // //    $this->set ("result",$result);
+    // //    }
+    // // }
     // }
 
+
+public function savejobs(){
+    if($this->request->is('post')){
+    $result=[];
+          $data = $this->request->getData();           
+            $addpT_Data = TableRegistry::get('manpower');
+            $saved_Job = $this->Manpower->newEmptyEntity();
+            $saved_Job->jobtitle= $data['title'];
+            $saved_Job->name=$data['name'];
+            $saved_Job->location=$data['location'];
+            $saved_Job->skills=$data['skills'];
+            $saved_Job->phone=$data['phone'];
+            $saved_Job->is_hired= 0;
+            $saved_Job->hired_by=0;
+            $saved_Job->expiry_on =date('Y-m-d', strtotime('+30 days'));
+            $saved_Job->expectedsalary = $data['expectedsalary'];
+
+            $addpT_Data->save($saved_Job);
+            $result = ['error'=>0,'status'=>200];
+            $this->set("result", $result); 
+            
+    }  
+    
+}
+public function idforjobs(){
+    $result=[];
+    $data = $this->request->getData(); 
+    $username = $this->User->find('all')->where(['id'=>$data['id']])
+        ->toArray();
+        $result = ['error' => 0, 'status' => 200, 'data'=>$username ];
+        $this->set("result", $result);}
+   
+ public function appliedjobs(){
+    $data= $this->request->getdata();
+    $jobsdata = $this->Manpower->find('all')->where(['name'=>$data['name']])
+    ->toArray();
+    $result = ['error' => 0, 'status' => 200, 'data'=>$jobsdata  ];
+    $this->set("result", $result);
+}  
+    
+    public function totaljobs(){
+        $data= $this->request->getdata();
+        $jobsdata = $this->Manpower->find('all')->where(['is_hired'=>0])
+        ->toArray();
+        $result = ['error' => 0, 'status' => 200, 'data'=>$jobsdata  ];
+        $this->set("result", $result);
     }
+    public function editjobstatus(){
+        $data= $this->request->getdata();        
+        $results = $this->Manpower->get($data['id']);
+        $userdata ['is_hired'] = 1;
+        $userdata ['hired_by'] = $data['name'];            
+        $profiledata = $this->Manpower->patchEntity($results,$userdata);
+        $this->Manpower->save( $profiledata);
+        $result = ['error' => 0, 'status' => 200,];  
+        $this->set("result", $result);
+    }
+
+    }
+
+
+   
