@@ -127,3 +127,25 @@ CREATE TABLE `farmerx`.`onetimepassword` (
 ALTER TABLE `onetimepassword` CHANGE `phone` `phone` VARCHAR(15) NOT NULL;
 ALTER TABLE `onetimepassword` DROP `email`;
 ALTER TABLE `transportation` CHANGE `id` `id` INT(32) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
+
+========================================================================================================================
+CREATE TABLE `farmerx`.`manpowe` (
+  `id` BIGINT(33) NOT NULL AUTO_INCREMENT , 
+  `jobtitle` VARCHAR(200) NOT NULL , 
+  `Name` VARCHAR(200) NOT NULL , 
+  `Phone` VARCHAR(200) NOT NULL , 
+  `location` VARCHAR(255) NOT NULL , 
+  `skills` VARCHAR(255) NOT NULL , 
+  `is-hired` TINYINT NOT NULL , 
+  `hired-by` VARCHAR(255) NULL DEFAULT NULL , 
+  `created_on` DATE NOT NULL , 
+  `hired_on` DATE NOT NULL , 
+  `expiry-on` DATE NOT NULL , 
+  PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+  ALTER TABLE `manpowe` RENAME `manpower`;
+
+  ALTER TABLE `manpower` CHANGE `Name` `name` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `manpower` CHANGE `Phone` `phone` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `manpower` ADD `expectedsalary` INT(100) NOT NULL AFTER `skills`;
+ALTER TABLE `manpower` CHANGE `phone` `phone` TEXT NOT NULL;
