@@ -448,7 +448,7 @@ public function savejobs(){
             $saved_Job->phone=$data['phone'];
             $saved_Job->is_hired= 0;
             $saved_Job->hired_by=0;
-            $saved_Job->expiry_on =date('Y-m-d', strtotime('+30 days'));
+            $saved_Job->subscription_expiry = date('Y-m-d', strtotime('+30 days'));
             $saved_Job->expectedsalary = $data['expectedsalary'];
 
             $addpT_Data->save($saved_Job);
@@ -483,18 +483,17 @@ public function idforjobs(){
     }
     public function editjobstatus(){
         $data= $this->request->getdata(); 
-        // debug($data['noofdays']) ;  
-        // die;    
+        $expiry =  intval($data['noofdays']);
+        // debug($expiry);
+        // die;
         $results = $this->Manpower->get($data['id']);
         $userdata ['is_hired'] = 1;
-        $userdata ['hired_by'] = $data['name']; 
+        $userdata ['hired_by'] = $data['memberid']; 
         $userdata ['noofdays'] = $data['noofdays'];
-        // debug($userdata);  
-        // // die;       
+        $userdata ['expiry_on'] = date('Y-m-d', strtotime("+$expiry days"));   
         $profiledata = $this->Manpower->patchEntity($results,$userdata);
         // debug($profiledata);
         // die;
-
         $this->Manpower->save( $profiledata);
         $result = ['error' => 0, 'status' => 200,];  
         $this->set("result", $result);

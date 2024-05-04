@@ -16,11 +16,12 @@ use Cake\ORM\Entity;
  * @property string $skills
  * @property int $expectedsalary
  * @property int $is_hired
- * @property string|null $hired_by
+ * @property int|null $hired_by
  * @property \Cake\I18n\FrozenTime $created_on
  * @property \Cake\I18n\FrozenDate $hired_on
  * @property \Cake\I18n\FrozenDate $expiry_on
- * @property string $noofdays
+ * @property int $noofdays
+ * @property \Cake\I18n\FrozenTime|null $subscription_expiry
  */
 class Manpower extends Entity
 {
@@ -46,5 +47,6 @@ class Manpower extends Entity
         'hired_on' => true,
         'expiry_on' => true,
         'noofdays' => true,
+        'subscription_expiry' => true,
     ];
 }

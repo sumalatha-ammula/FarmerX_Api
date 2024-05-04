@@ -89,8 +89,7 @@ class ManpowerTable extends Table
             ->notEmptyString('is_hired');
 
         $validator
-            ->scalar('hired_by')
-            ->maxLength('hired_by', 255)
+            ->integer('hired_by')
             ->allowEmptyString('hired_by');
 
         $validator
@@ -108,9 +107,13 @@ class ManpowerTable extends Table
             ->notEmptyDate('expiry_on');
 
         $validator
-            ->scalar('noofdays')
+            ->integer('noofdays')
             ->requirePresence('noofdays', 'create')
             ->notEmptyString('noofdays');
+
+        $validator
+            ->dateTime('subscription_expiry')
+            ->allowEmptyDateTime('subscription_expiry');
 
         return $validator;
     }
