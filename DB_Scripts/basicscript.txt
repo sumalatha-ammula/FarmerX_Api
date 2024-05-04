@@ -149,3 +149,4 @@ CREATE TABLE `farmerx`.`manpowe` (
 ALTER TABLE `manpower` CHANGE `Phone` `phone` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 ALTER TABLE `manpower` ADD `expectedsalary` INT(100) NOT NULL AFTER `skills`;
 ALTER TABLE `manpower` CHANGE `phone` `phone` TEXT NOT NULL;
+ALTER TABLE `manpower` ADD `noofdays` INT(33) NOT NULL AFTER `expiry_on`;

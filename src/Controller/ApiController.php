@@ -476,17 +476,25 @@ public function idforjobs(){
     
     public function totaljobs(){
         $data= $this->request->getdata();
-        $jobsdata = $this->Manpower->find('all')->where(['is_hired'=>0])
+        $jobsdata = $this->Manpower->find('all')
         ->toArray();
         $result = ['error' => 0, 'status' => 200, 'data'=>$jobsdata  ];
         $this->set("result", $result);
     }
     public function editjobstatus(){
-        $data= $this->request->getdata();        
+        $data= $this->request->getdata(); 
+        // debug($data['noofdays']) ;  
+        // die;    
         $results = $this->Manpower->get($data['id']);
         $userdata ['is_hired'] = 1;
-        $userdata ['hired_by'] = $data['name'];            
+        $userdata ['hired_by'] = $data['name']; 
+        $userdata ['noofdays'] = $data['noofdays'];
+        // debug($userdata);  
+        // // die;       
         $profiledata = $this->Manpower->patchEntity($results,$userdata);
+        // debug($profiledata);
+        // die;
+
         $this->Manpower->save( $profiledata);
         $result = ['error' => 0, 'status' => 200,];  
         $this->set("result", $result);
