@@ -11,7 +11,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property string $jobtitle
  * @property string $name
- * @property int $phone
+ * @property string $phone
  * @property string $location
  * @property string $skills
  * @property int $expectedsalary
@@ -20,6 +20,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $created_on
  * @property \Cake\I18n\FrozenDate $hired_on
  * @property \Cake\I18n\FrozenDate $expiry_on
+ * @property string $noofdays
  */
 class Manpower extends Entity
 {
@@ -44,5 +45,6 @@ class Manpower extends Entity
         'created_on' => true,
         'hired_on' => true,
         'expiry_on' => true,
+        'noofdays' => true,
     ];
 }

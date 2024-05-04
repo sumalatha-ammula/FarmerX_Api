@@ -63,7 +63,7 @@ class ManpowerTable extends Table
             ->notEmptyString('name');
 
         $validator
-            ->integer('phone')
+            ->scalar('phone')
             ->requirePresence('phone', 'create')
             ->notEmptyString('phone');
 
@@ -106,6 +106,11 @@ class ManpowerTable extends Table
             ->date('expiry_on')
             ->requirePresence('expiry_on', 'create')
             ->notEmptyDate('expiry_on');
+
+        $validator
+            ->scalar('noofdays')
+            ->requirePresence('noofdays', 'create')
+            ->notEmptyString('noofdays');
 
         return $validator;
     }
