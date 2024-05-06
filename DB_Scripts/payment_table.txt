@@ -1,2 +1,17 @@
 
-CREATE TABLE `payments` (`id` INT(32) NOT NULL AUTO_INCREMENT , `order_id` VARCHAR(200) NULL DEFAULT NULL , `entity` VARCHAR(100) NOT NULL , `amount` FLOAT(10,2) NOT NULL , `amount_paid` FLOAT(10,2) NOT NULL , `amount_due` FLOAT(10,2) NOT NULL , `currency` VARCHAR(10) NOT NULL , `receipt` VARCHAR(100) NOT NULL , `offer_id` VARCHAR(100) NOT NULL , `status` VARCHAR(20) NOT NULL , `attempts` INT(4) NOT NULL , `created_at` VARCHAR(100) NOT NULL , `description` TEXT NOT NULL , `payment_id` VARCHAR(100) NOT NULL , `signature` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+CREATE TABLE `payments` (
+   `id` INT(32) NOT NULL AUTO_INCREMENT , 
+   `order_id` VARCHAR(200) NULL DEFAULT NULL , 
+   `entity` VARCHAR(100) NOT NULL , `amount` FLOAT(10,2) NOT NULL , 
+   `amount_paid` FLOAT(10,2) NOT NULL , `amount_due` FLOAT(10,2) NOT NULL , 
+   `currency` VARCHAR(10) NOT NULL , `receipt` VARCHAR(100) NOT NULL , 
+   `offer_id` VARCHAR(100) NOT NULL , `status` VARCHAR(20) NOT NULL , 
+   `attempts` INT(4) NOT NULL , `created_at` VARCHAR(100) NOT NULL , 
+   `description` TEXT NOT NULL , `payment_id` VARCHAR(100) NOT NULL , 
+   `signature` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+
+   ===========================================================================
+ALTER TABLE `payments` CHANGE `payment_id` `payment_response` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+ALTER TABLE `payments` CHANGE `offer_id` `offer_id` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;
