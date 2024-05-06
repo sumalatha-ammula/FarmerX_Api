@@ -50,6 +50,51 @@
 
         }
 
+
+        public function lookingforjob(){
+            $response = $this->razorpayorder(200);
+            $result = ['error' => 0, 'status' => 200, 'key' => 'rzp_test_n2VHLMFV62PskX',  'data'=>$response];
+            $this->set("result", $result);
+        }
+
+        
+
+        private function razorpayorder($amt){
+            
+            $amt = $amt * 100;
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.razorpay.com/v1/orders',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS =>'{
+            "amount": '.$amt.',  
+            "currency": "INR",
+            "receipt": "order_rcptid_11"
+            }',
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'Authorization: Basic cnpwX3Rlc3RfbjJWSExNRlY2MlBza1g6Z0xwMkhGc0xhdmhmdjFvUGp3QU1nd1hG'
+            ),
+            ));
+
+            $response = curl_exec($curl);
+            curl_close($curl);
+            $response = json_decode($response);
+            //insert into payment table
+
+            
+
+
+            return ($response);
+            //$result = ['error' => 0, 'status' => 200, 'key' => 'rzp_test_n2VHLMFV62PskX',  'data'=>$response];
+            //$this->set("result", $result);
+    }
         public function register(){
             
             if($this->request->is('post')){
