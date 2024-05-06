@@ -45,6 +45,7 @@
             $this->loadComponent("Email");
             $this->loadComponent('Sms');
             $this->loadModel('Manpower');
+            $this->loadModel("Payments");
 
 
 
@@ -57,10 +58,15 @@
             $this->set("result", $result);
         }
 
-        
+        public function hiringforjob(){
+            $response = $this->razorpayorder(10);
+            $result = ['error' => 0, 'status' => 200, 'key' => 'rzp_test_n2VHLMFV62PskX',  'data'=>$response];
+            $this->set("result", $result);
+        }
+
 
         private function razorpayorder($amt){
-            
+            $receipt_no = random_int(000001,999999);
             $amt = $amt * 100;
             $curl = curl_init();
             curl_setopt_array($curl, array(
@@ -75,7 +81,7 @@
             CURLOPT_POSTFIELDS =>'{
             "amount": '.$amt.',  
             "currency": "INR",
-            "receipt": "order_rcptid_11"
+            "receipt": "' . $receipt_no . '"
             }',
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
@@ -86,14 +92,50 @@
             $response = curl_exec($curl);
             curl_close($curl);
             $response = json_decode($response);
-            //insert into payment table
-
+            // debug($response);
+            // die;
+            $payment = TableRegistry::get('Payments');
+                $payment_Data= $this->Payments->newEmptyEntity();
+                $payment_Data->order_id = $response->id;
+                $payment_Data->entity = $response->entity;
+                $payment_Data->amount =$response->amount;
+                $payment_Data->amount_paid = $response->amount_paid;
+                $payment_Data->amount_due = $response->amount_due;
+                $payment_Data->currency = $response->currency;
+                $payment_Data->receipt =$response->receipt;
+                $payment_Data->offer_id = $response->offer_id;
+                $payment_Data->status = $response->status;
+                $payment_Data->created_at =$response->created_at;
+                $payment_Data->description = 1;
+                $payment->save( $payment_Data);
             
-
+           
 
             return ($response);
             //$result = ['error' => 0, 'status' => 200, 'key' => 'rzp_test_n2VHLMFV62PskX',  'data'=>$response];
             //$this->set("result", $result);
+    }
+
+    public function paymentSuccess(){
+        $result = [];
+        $data = $this->request->getData() ;
+        $appdata = json_decode($data['Payment_id']);
+        $data2 = $appdata->response;
+        // debug($data2);
+        // die;
+        $results =$this->Payments->find()
+        ->where(['order_id' => $data2->razorpay_order_id])
+        ->first(); 
+     
+        $userdata ['payment_response'] = $data2->razorpay_payment_id;
+        $userdata ['signature'] = $data2->razorpay_signature; 
+        $payment = $this->Payments->patchEntity($results,$userdata);
+        $this->Payments->save($payment);
+    //    debug($payment) ;
+    //    die;
+       $result = ['error' => 0, 'status' => 200];            
+       $this->set("result", $result);
+       
     }
         public function register(){
             
