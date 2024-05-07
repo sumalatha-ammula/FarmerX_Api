@@ -421,6 +421,24 @@
     $this->set ("result",$result);
     }    
 
+    // public function editprofile(){
+    //     $result = [];
+    //     $result = ['error' => 1,];
+    //     $this->request->is('post');
+    //     $data = $this->request->getData(); 
+    //     $results = $this->User->get($data['id']);        
+    //         $userdata ['name'] = $data['username'];
+    //         $userdata ['email'] = $data['email'];
+    //         $userdata ['mobile'] = $data['phone'];
+    //         $userdata ['profile_img'] =$this->Media->upload($data['photo'], 'User_img');
+    //         $profiledata = $this->User->patchEntity($results,$userdata);
+    //         $this->User->save( $profiledata);
+       
+    //     $result = [
+    //         'error'=>0, 'status'=> 200, 'User'=> $results
+    //    ];
+    //     $this->set ("result",$result);
+    // }
     public function editprofile(){
         $result = [];
         $result = ['error' => 1,];
@@ -429,8 +447,10 @@
         $results = $this->User->get($data['id']);        
             $userdata ['name'] = $data['username'];
             $userdata ['email'] = $data['email'];
-            $userdata ['mobile'] = $data['phone'];
+            $userdata ['phone'] = $data['phone'];
+            if ($data['photo'] instanceof \Laminas\Diactoros\UploadedFile && $data['photo']->getSize() > 0) {
             $userdata ['profile_img'] =$this->Media->upload($data['photo'], 'User_img');
+            }
             $profiledata = $this->User->patchEntity($results,$userdata);
             $this->User->save( $profiledata);
        
@@ -438,8 +458,7 @@
             'error'=>0, 'status'=> 200, 'User'=> $results
        ];
         $this->set ("result",$result);
-    }
-
+}
 
     public function transport(){
         $result=[];
@@ -529,6 +548,7 @@ public function savejobs(){
             $addpT_Data = TableRegistry::get('manpower');
             $saved_Job = $this->Manpower->newEmptyEntity();
             $saved_Job->jobtitle= $data['title'];
+            $saved_Job->user_id=$data['id'];
             $saved_Job->name=$data['name'];
             $saved_Job->location=$data['location'];
             $saved_Job->skills=$data['skills'];
@@ -555,7 +575,7 @@ public function idforjobs(){
    
  public function appliedjobs(){
     $data= $this->request->getdata();
-    $jobsdata = $this->Manpower->find('all')->where(['name'=>$data['name']])
+    $jobsdata = $this->Manpower->find('all')->where(['user_id'=>$data['id']])
     ->toArray();
     $result = ['error' => 0, 'status' => 200, 'data'=>$jobsdata  ];
     $this->set("result", $result);
@@ -586,7 +606,47 @@ public function idforjobs(){
         $this->set("result", $result);
     }
 
+    public function getpage(){
+        $data = $this->request->getData();
+        $result['error'] = 0;
+        if($data['id'] == 1) 
+        {
+            $result['content'] = 'Terms & Conditions';
+        }
+        else if($data['id'] == 2){
+            $result['content'] = 'About';
+        }
+        else{
+            $result['content'] = '';
+        }
+        
+        $this->set("result", $result);
     }
 
+    public function dailywork(){
+        $result=[];
+        $work = [
+            'key1'=>'Construction',
+            'key2'=>'Shopkeeper',
+            'key3'=>'Server',
+            'key4'=>'Cashier',
+            'key5'=>'Helper',
+            'key6'=>'Superviser',
+            'key7'=>'Plumber',
+            'key8'=>'Painter',
+            'key9'=>'Electrician',
+            'key10'=>'Carpenter',
+            'key11'=>'Drivers',
+
+
+        ];
+        $result = ['error' => 0, 'status' => 200,'data'=> $work,];  
+        $this->set("result", $result);
+        // $this ->set([
+        //     'status'=>200,
+        //     'data'=> $work,
+        // ]);
+    }
+    }
 
    
