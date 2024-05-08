@@ -1,0 +1,12 @@
+CREATE TABLE `farmerx`.`industry` 
+(`id` BIGINT(33) NOT NULL AUTO_INCREMENT ,
+ `name` VARCHAR(200) NOT NULL , `icon` VARCHAR(255) NOT NULL , 
+ `status` TINYINT(1) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+
+
+
+
+
+ ==================================================================
+ ALTER TABLE `manpower` ADD `industr_id` INT(33) NOT NULL AFTER `subscription_expiry`;

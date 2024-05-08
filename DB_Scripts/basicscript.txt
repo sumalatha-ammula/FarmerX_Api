@@ -155,6 +155,16 @@ ALTER TABLE `manpower` ADD `user_id` BIGINT(200) NOT NULL AFTER `expiry-on`;
 ALTER TABLE `manpower` CHANGE `hired-by` `hired_by` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `manpower` CHANGE `is-hired` `is_hired` TINYINT(4) NOT NULL;
 ALTER TABLE `manpower` CHANGE `expiry-on` `expiry_on` DATE NOT NULL;
+
+ALTER TABLE `manpower` ADD `industr_id` INT(33) NOT NULL AFTER `subscription_expiry`;
+
+
+
+
+
+
+
+
 ==============================================================================================
 CREATE TABLE farmerx.admin (
   id BIGINT(33) NOT NULL AUTO_INCREMENT , 

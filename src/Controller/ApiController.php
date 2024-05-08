@@ -46,6 +46,7 @@
             $this->loadComponent('Sms');
             $this->loadModel('Manpower');
             $this->loadModel("Payments");
+            $this->loadModel("Industry");
 
 
 
@@ -553,6 +554,7 @@ public function savejobs(){
             $saved_Job->location=$data['location'];
             $saved_Job->skills=$data['skills'];
             $saved_Job->phone=$data['phone'];
+            $saved_Job->industry_id = $data['industry_id'];
             $saved_Job->is_hired= 0;
             $saved_Job->hired_by=0;
             $saved_Job->subscription_expiry = date('Y-m-d', strtotime('+30 days'));
@@ -583,7 +585,9 @@ public function idforjobs(){
     
     public function totaljobs(){
         $data= $this->request->getdata();
-        $jobsdata = $this->Manpower->find('all')
+        // debug($data);
+        // die;
+        $jobsdata = $this->Manpower->find('all')->where(['industry_id'=> $data['id']])
         ->toArray();
         $result = ['error' => 0, 'status' => 200, 'data'=>$jobsdata  ];
         $this->set("result", $result);
@@ -626,17 +630,17 @@ public function idforjobs(){
     public function dailywork(){
         $result=[];
         $work = [
-            'key1'=>'Construction',
-            'key2'=>'Shopkeeper',
-            'key3'=>'Server',
-            'key4'=>'Cashier',
-            'key5'=>'Helper',
-            'key6'=>'Superviser',
-            'key7'=>'Plumber',
-            'key8'=>'Painter',
-            'key9'=>'Electrician',
-            'key10'=>'Carpenter',
-            'key11'=>'Drivers',
+            'Construction',
+            'Shopkeeper',
+            'Server',
+            'Cashier',
+            'Helper',
+            'Superviser',
+            'Plumber',
+            'Painter',
+            'Electrician',
+            'Carpenter',
+        'Drivers',
 
 
         ];
@@ -647,6 +651,17 @@ public function idforjobs(){
         //     'data'=> $work,
         // ]);
     }
+public function industry(){
+    $result=[];
+    $industry = $this->Industry->find('all')->toArray();
+    $result =['error'=>0,'status'=>200,'data'=>$industry];
+    $this->set('result',$result);
+
+
+
+}
+
+
     }
 
    
