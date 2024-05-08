@@ -47,6 +47,7 @@
             $this->loadModel('Manpower');
             $this->loadModel("Payments");
             $this->loadModel("Industry");
+            $this->loadModel("blog");
 
 
 
@@ -656,11 +657,15 @@ public function industry(){
     $industry = $this->Industry->find('all')->toArray();
     $result =['error'=>0,'status'=>200,'data'=>$industry];
     $this->set('result',$result);
-
-
-
 }
-
+public function blog(){
+    $result=[];
+    $blog = $this->blog->find('all')
+    ->toArray();
+    // debug($blog);
+    $result = ['error' => 0, 'status' => 200, 'data'=>$blog ];
+     $this->set("result", $result);
+}
 
     }
 

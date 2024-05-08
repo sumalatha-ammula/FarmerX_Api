@@ -1,0 +1,10 @@
+CREATE TABLE `farmerx`.`blog` (
+    `id` BIGINT(32) NOT NULL AUTO_INCREMENT , 
+    `title` VARCHAR(255) NOT NULL , 
+    `image` VARCHAR(255) NOT NULL , 
+    `description` TEXT NOT NULL , 
+    `status` TINYINT(1) NOT NULL , 
+    PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+
+    ALTER TABLE `blog` CHANGE `image` `image` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;
