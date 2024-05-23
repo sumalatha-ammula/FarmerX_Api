@@ -9,4 +9,4 @@ CREATE TABLE `farmerx`.`industry`
 
 
  ==================================================================
- ALTER TABLE `manpower` ADD `industr_id` INT(33) NOT NULL AFTER `subscription_expiry`;
+ ALTER TABLE `manpower` ADD `industry_id` INT(33) NOT NULL AFTER `subscription_expiry`;

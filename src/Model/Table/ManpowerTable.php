@@ -57,10 +57,14 @@ class ManpowerTable extends Table
             ->notEmptyString('jobtitle');
 
         $validator
+            ->integer('user_id')
+            ->requirePresence('user_id', 'create')
+            ->notEmptyString('user_id');
+
+        $validator
             ->scalar('name')
             ->maxLength('name', 200)
-            ->requirePresence('name', 'create')
-            ->notEmptyString('name');
+            ->allowEmptyString('name');
 
         $validator
             ->scalar('phone')
@@ -114,6 +118,11 @@ class ManpowerTable extends Table
         $validator
             ->dateTime('subscription_expiry')
             ->allowEmptyDateTime('subscription_expiry');
+
+        $validator
+            ->integer('industry_id')
+            ->requirePresence('industry_id', 'create')
+            ->notEmptyString('industry_id');
 
         return $validator;
     }

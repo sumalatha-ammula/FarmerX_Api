@@ -10,7 +10,8 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $jobtitle
- * @property string $name
+ * @property int $user_id
+ * @property string|null $name
  * @property string $phone
  * @property string $location
  * @property string $skills
@@ -22,6 +23,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenDate $expiry_on
  * @property int $noofdays
  * @property \Cake\I18n\FrozenTime|null $subscription_expiry
+ * @property int $industry_id
  */
 class Manpower extends Entity
 {
@@ -36,6 +38,7 @@ class Manpower extends Entity
      */
     protected $_accessible = [
         'jobtitle' => true,
+        'user_id' => true,
         'name' => true,
         'phone' => true,
         'location' => true,
@@ -48,5 +51,6 @@ class Manpower extends Entity
         'expiry_on' => true,
         'noofdays' => true,
         'subscription_expiry' => true,
+        'industry_id' => true,
     ];
 }

@@ -463,9 +463,13 @@
 }
 
     public function transport(){
+
         $result=[];
+        $data = $this->request->getdata();
+        // debug($data);
+        // die;
         $result['error'] = 0;
-        $results = $this->Transportation->find('all')
+        $results = $this->Transportation->find('all')->where(['service_area'=>$data['location']])
         ->toArray();
         $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
          $this->set("result", $result);
