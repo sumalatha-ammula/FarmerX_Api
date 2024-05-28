@@ -47,13 +47,17 @@
             $this->loadModel('Manpower');
             $this->loadModel("Payments");
             $this->loadModel("Industry");
-            $this->loadModel("blog");
+            $this->loadModel("Blog");
 
 
 
         }
 
-
+        public function addcroppay(){
+            $response = $this->razorpayorder(200);
+            $result = ['error' => 0, 'status' => 200, 'key' => 'rzp_test_n2VHLMFV62PskX',  'data'=>$response];
+            $this->set("result", $result);
+        }
         public function lookingforjob(){
             $response = $this->razorpayorder(200);
             $result = ['error' => 0, 'status' => 200, 'key' => 'rzp_test_n2VHLMFV62PskX',  'data'=>$response];
@@ -664,13 +668,12 @@ public function industry(){
 }
 public function blog(){
     $result=[];
-    $blog = $this->blog->find('all')
+    $blog = $this->Blog->find('all')
     ->toArray();
     // debug($blog);
     $result = ['error' => 0, 'status' => 200, 'data'=>$blog ];
      $this->set("result", $result);
 }
-
 
     }
 
