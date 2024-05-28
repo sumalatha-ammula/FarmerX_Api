@@ -670,14 +670,7 @@ public function blog(){
     $result = ['error' => 0, 'status' => 200, 'data'=>$blog ];
      $this->set("result", $result);
 }
-public function dashblog(){
-    $result=[];
-    $blog = $this->blog->find('all')->order(['id' => 'DESC'])->limit(1)
-    ->toArray();
-    // debug($blog);
-    $result = ['error' => 0, 'status' => 200, 'data'=>$blog ];
-     $this->set("result", $result);
-}
+
 
     }
 
