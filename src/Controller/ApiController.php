@@ -675,6 +675,26 @@ public function blog(){
      $this->set("result", $result);
 }
 
+public function dashblog(){
+    $result=[];
+    $blog = $this->Blog->find('all')->order(['id' => 'DESC'])->limit(1)
+    ->toArray();
+    // debug($blog);
+    $result = ['error' => 0, 'status' => 200, 'data'=>$blog ];
+     $this->set("result", $result);
+}
+public function contact(){
+    $result =[];
+    $contact = [
+        "mobile"=>"9955443322", // Mobile number
+        "email"=>"farme@gmail.com" // Email
+    ];
+
+    $result = ['error' => 0, 'status' => 200, 'data'=>$contact ];
+     $this->set("result", $result);
+    
+}
+
     }
 
    
