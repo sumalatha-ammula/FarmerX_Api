@@ -467,7 +467,6 @@
 }
 
     public function transport(){
-
         $result=[];
         $data = $this->request->getdata();
         // debug($data);
@@ -488,27 +487,52 @@
         ->toArray();
         $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
          $this->set("result", $result);
-
 }
 
 
     public function listcrop(){
          $data=$this->request->getdata();
-
         $result=[];
         $result['error'] = 0;
         $results = $this->Crop->find('all')
-        // ->contain(['User'])
         ->order(['id' => 'DESC'])
-        // ->where(['User.id'=>$data['id']])
         ->limit(5)
-        ->toArray();
-        // $userdata = $this->User->find('all')                        
-        // ->select(['User.id', 'User.name', 'User.email', 'User.phone', 'User.profile_img',]) // Added 'User.user_id' to select                         ->contain(['Crop'])
-        //                  ->where(['id'=>$data['id']])
-        //                  ->toArray();
-        $result = ['error' => 1, 'status' => 200, 'data'=>$results];
+        ->toArray();        
+        $result = ['error' => 0, 'status' => 200, 'data'=>$results];
          $this->set("result", $result);
+    }
+
+    public function myproducts(){
+        $data = $this->request->getdata();       
+        $results = $this->Crop->find('all')
+        ->where(['user_id'=>$data['id']])
+        ->toArray();
+        // debug($results);
+        $result = ['error' => 0, 'status' => 200, 'data'=>$results];
+         $this->set("result", $result);
+    }
+
+    public function getmyproduct(){
+        $results=[];
+        $data = $this->request->getdata();
+        $results = $this->Crop->find('all')
+        ->where(['id'=>$data['id']])->toArray(); 
+        $result = ['error' => 0, 'status' => 200, 'data'=>$results];
+         $this->set("result", $result);
+    }
+    public function editproduct(){
+        $result=[];
+        $data = $this->request->getdata();
+        // debug($data);
+        $results = $this->Crop->get($data['id']);
+        $crop['qty'] = $data['qty'];
+        $cropedit = $this->Crop->patchEntity($results,$crop);
+        $this->Crop->save( $cropedit);
+         
+        $result = [
+            'error'=>0, 'status'=> 200, 'Crop'=> $results
+       ];
+        $this->set ("result",$result);
     }
 
     
@@ -517,7 +541,6 @@
         $result=[];
         $transportation = $this->Transportation->find('all')
         ->toArray();
-
         $crop = $this->Crop->find('all')
         ->toArray();
         $jobsdata = $this->Manpower->find('all')->toArray();
@@ -527,34 +550,12 @@
         $this->set("result", $result);
     }
 
-    // // public function saveProfileImage(){
-
-    // //     $result = [];
-    // //     $result = ['error' => 1,];
-    // //     $this->request->is('post');
-    // //     $data = $this->request->getData(); 
-    // //     // debug($data);
-    // //     $user = $this->User->get($data['id']); 
-
-    // //     $profileImagePath = $this->Media->upload($data['photo'], 'User_img');
-    // //     if ($profileImagePath) {
-    // //         $user->profile_img = $profileImagePath;
-        
-    // //         if ($this->User->save($user)) {
-    // //         }
-    // //     $result = [
-    // //         'error'=>0, 'status'=> 200, 'User'=> $user
-    // //    ];
-    // //    $this->set ("result",$result);
-    // //    }
-    // // }
-    // }
 
 
 public function savejobs(){
     if($this->request->is('post')){
     $result=[];
-          $data = $this->request->getData();           
+          $data = $this->request->getData();                
             $addpT_Data = TableRegistry::get('manpower');
             $saved_Job = $this->Manpower->newEmptyEntity();
             $saved_Job->jobtitle= $data['title'];
@@ -568,9 +569,12 @@ public function savejobs(){
             $saved_Job->hired_by=0;
             $saved_Job->subscription_expiry = date('Y-m-d', strtotime('+30 days'));
             $saved_Job->expectedsalary = $data['expectedsalary'];
+            // debug($saved_Job);   
+            // die; 
 
             $addpT_Data->save($saved_Job);
             $result = ['error'=>0,'status'=>200];
+            
             $this->set("result", $result); 
             
     }  
