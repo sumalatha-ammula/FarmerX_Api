@@ -292,7 +292,7 @@
          public function listofcrop(){
             $result=[];
             $result['error'] = 0;
-            $results = $this->Crop->find('all')->order(['id' => 'DESC'])
+            $results = $this->Crop->find('all')->where(['status'=>1])->order(['id' => 'DESC'])
             ->select(['id','name','category', 'qty', 'price','description', 'location', 'photo'])
             ->toArray();
             
@@ -494,7 +494,7 @@
          $data=$this->request->getdata();
         $result=[];
         $result['error'] = 0;
-        $results = $this->Crop->find('all')
+        $results = $this->Crop->find('all')->where(['status'=>1])
         ->order(['id' => 'DESC'])
         ->limit(5)
         ->toArray();        
@@ -505,7 +505,7 @@
     public function myproducts(){
         $data = $this->request->getdata();       
         $results = $this->Crop->find('all')
-        ->where(['user_id'=>$data['id']])
+        ->where(['user_id'=>$data['id'],'status'=>1])
         ->toArray();
         // debug($results);
         $result = ['error' => 0, 'status' => 200, 'data'=>$results];
@@ -696,6 +696,17 @@ public function contact(){
 
     $result = ['error' => 0, 'status' => 200, 'data'=>$contact ];
      $this->set("result", $result);
+    
+}
+public function delete(){
+    $result=[];
+    $data=$this->request->getdata();
+    $results = $this->Crop->get($data['id']);
+        $userdata ['status'] = 0;        
+        $profiledata = $this->Crop->patchEntity($results,$userdata);       
+        $delete=$this->Crop->save( $profiledata);
+        $result = ['error' => 0, 'status' => 200,'data'=> $delete];  
+        $this->set("result", $result);
     
 }
 
