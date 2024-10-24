@@ -240,7 +240,6 @@
             $adUpdP_Data->capacity = $data['capacity'];
             $adUpdP_Data->price_km = $data['price'];
             $adUpdP_Data->contact_number = $data['contact'];
-
             $adUpdP_Data->service_area = $data['address'];
             $adUpdP_Data->created_by = 1;
             $adUpdP_Data->status = 1;
@@ -525,6 +524,14 @@
         $results=[];
         $data = $this->request->getdata();
         $results = $this->Crop->find('all')
+        ->where(['id'=>$data['id']])->toArray(); 
+        $result = ['error' => 0, 'status' => 200, 'data'=>$results];
+         $this->set("result", $result);
+    }
+    public function getmytransport(){
+        $results=[];
+        $data = $this->request->getdata();
+        $results = $this->Transportation->find('all')
         ->where(['id'=>$data['id']])->toArray(); 
         $result = ['error' => 0, 'status' => 200, 'data'=>$results];
          $this->set("result", $result);
