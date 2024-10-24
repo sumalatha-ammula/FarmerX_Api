@@ -511,6 +511,15 @@
         $result = ['error' => 0, 'status' => 200, 'data'=>$results];
          $this->set("result", $result);
     }
+    public function mytranport(){
+        $data = $this->request->getdata();
+        $results - $this->Transportation->find('all')
+        -where(['user_id' => $data['id'], 'status'=>1])
+        ->toArray();
+        debug($results);
+        $result = ['error'=>0, 'status'=> 200, 'data'=> $results];
+        $this->set("result", $result);
+    }
 
     public function getmyproduct(){
         $results=[];
