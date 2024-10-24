@@ -739,6 +739,17 @@ public function delete(){
         $this->set("result", $result);
     
 }
+public function deletetransport(){
+    $result=[];
+    $data=$this->request->getdata();
+    $results = $this->Transportation->get($data['id']);
+        $userdata ['status'] = 0;        
+        $transportdata = $this->Transportation->patchEntity($results,$userdata);       
+        $deletetransport=$this->Transportation->save( $transportdata);
+        $result = ['error' => 0, 'status' => 200,'data'=> $deletetransport];  
+        $this->set("result", $result);
+    
+}
 
     }
 
