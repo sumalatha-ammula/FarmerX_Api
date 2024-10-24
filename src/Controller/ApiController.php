@@ -301,7 +301,7 @@
         public function transportlist(){
             $result=[];
             $result['error'] = 0;
-            $results = $this->Transportation->find('all')->order(['id' => 'DESC'])
+            $results = $this->Transportation->find('all')->where(['status'=>1])->order(['id' => 'DESC'])
             ->toArray();
             $result = ['error' => 0, 'status' => 200, 'data'=>$results ];
              $this->set("result", $result);
