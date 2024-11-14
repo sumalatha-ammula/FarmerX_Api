@@ -512,10 +512,12 @@
     }
     public function mytranport(){
         $data = $this->request->getdata();
+        // debug($data);
         $results = $this->Transportation->find('all')
         ->where(['user_id' => $data['id'], 'status'=>1])
         ->toArray();
         // debug($results);
+        // pr($results);
         $result = ['error'=>0, 'status'=> 200, 'data'=> $results];
         $this->set("result", $result);
     }
@@ -542,6 +544,7 @@
         // debug($data);
         $results = $this->Crop->get($data['id']);
         $crop['qty'] = $data['qty'];
+        $crop['price']=$data['price'];
         $cropedit = $this->Crop->patchEntity($results,$crop);
         $this->Crop->save( $cropedit);
          
@@ -556,12 +559,12 @@ public function edittransport(){
     $results = $this->Transportation->get($data['id']);
     $transport['service_area'] = $data['service_area'];
     $transport['price_km'] = $data['price_km'];
-    $transportedit = $this->Crop->patchEntity($results,$transport);
-    $this->Crop->save( $transportedit);
+    $transportedit = $this->Transportation->patchEntity($results,$transport);
+    $this->Transportation->save( $transportedit);
      
     $result = [
         'error'=>0, 'status'=> 200, 'transport'=> $results
-   ];
+    ];
     $this->set ("result",$result);
 
 }
